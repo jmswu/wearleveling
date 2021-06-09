@@ -6,7 +6,7 @@ extern "C" {
 
 #include <stdint.h>
 
-uint8_t wearleveling_returnOne(void);
+uint32_t wearleveling_getVersionNumber(void);
 
 #ifdef __cplusplus
 }

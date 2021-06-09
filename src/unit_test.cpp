@@ -18,6 +18,6 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, dummyTest)
     {
-        ASSERT_EQ(0, wearleveling_returnOne());
+        ASSERT_EQ(0x00000001, wearleveling_getVersionNumber());
     }
 }
