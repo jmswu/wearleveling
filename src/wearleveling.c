@@ -32,7 +32,6 @@ static void wearleveling_init(wearleveling_params_typeDef * const pParams)
     internalState.indexBucketWrite = 0;
     internalState.bucketSize = 0;
     internalState.numOfBuckets = 0;
-    internalState.indexPage = 0;
 }
 
 static uint8_t wearleveling_save(uint8_t * const pData)
