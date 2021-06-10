@@ -32,7 +32,8 @@ namespace wearlevelingLibraryTest
 
         virtual ~wearlevelingLibraryTest(){}
 
-        virtual void SetUp(){
+        virtual void SetUp()
+        {
             randomizePageData();
         }
         virtual void TearDown(){}
