@@ -23,9 +23,13 @@ namespace wearlevelingLibraryTest
         virtual void TearDown(){}
     };
 
-    TEST_F(wearlevelingLibraryTest, dummyTest)
+    TEST_F(wearlevelingLibraryTest, mock_erase)
     {
-        ASSERT_EQ(0x00000001, wearleveling_getVersionNumber());
+        mock_pageErase();
+        for(unsigned i = 0; i < PAGE_SIZE; i++)
+        {
+            ASSERT_EQ(0xFF, page[i]);
+        }
     }
 }
 
