@@ -19,6 +19,7 @@ static uint8_t wearleveling_read(uint8_t * const pData);
 
 static uint16_t wearleveling_calculateBucketSize(void);
 static uint16_t wearleveling_calculateNumOfBuckets(void);
+static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
 static uint16_t wearleveling_findIndexRead(void);
 static uint16_t wearleveling_findIndexWrite(void);
 // static uint8_t wearleveling_isEmpty(void);
@@ -84,6 +85,12 @@ static uint16_t wearleveling_calculateNumOfBuckets(void)
     return capacityMinusFormatedString / internalState.bucketSize;
 }
 
+static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index)
+{
+    const uint32_t FORMATED_FLAG_OFFSET = sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
+    return (FORMATED_FLAG_OFFSET + (index * internalState.bucketSize));
+}
+
 static uint16_t wearleveling_findIndexRead(void)
 {
     uint16_t indexWrite = wearleveling_findIndexWrite();
@@ -92,10 +99,9 @@ static uint16_t wearleveling_findIndexRead(void)
 
 static uint16_t wearleveling_findIndexWrite(void)
 {
-    const uint32_t FORMATED_FLAG_OFFSET = sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
     for(uint16_t i = 0; i < internalState.numOfBuckets; i++)
     {
-        const uint32_t ADDRESS = FORMATED_FLAG_OFFSET + (i * internalState.bucketSize);
+        const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(i);
         const uint8_t DIRTY_FLAG = (uint8_t)(internalState.params.readTwoByte(ADDRESS) & 0xFF);
         if (DIRTY_FLAG == WEARLEVELING_LIB_EMPTY_FLAG)
             return i;
