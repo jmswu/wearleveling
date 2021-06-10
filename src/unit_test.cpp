@@ -39,6 +39,14 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0xFF, page[0]);
         ASSERT_EQ(0xFF, page[1]);
     }
+
+    TEST_F(wearlevelingLibraryTest, mock_write_2)
+    {
+        mock_pageErase();
+        ASSERT_EQ(1, mock_writeTwoByte(0, 0x1234));
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]);
+    }
 }
 
 
