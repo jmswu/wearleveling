@@ -32,19 +32,25 @@ namespace wearlevelingLibraryTest
 
 uint8_t mock_pageErase(void)
 {
-    (void)page;
-    return 0;
+    memset((void *)page, 0xFF, PAGE_SIZE);
+    return 1;
 }
 
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data)
 {
-    (void)addr;
-    (void)data;
-    return 0;
+    if (addr >= PAGE_SIZE) return 0;
+    
+    page[addr + 0] = (uint8_t)(data & 0xFF);
+    page[addr + 1] = (uint8_t)((data >> 8) & 0xFF);
+
+    return 1;
 }
 
 uint16_t mock_readTwoByte(uint32_t addr)
 {
-    (void)addr;
-    return 0;
+    if (addr >= PAGE_SIZE) return 0;
+
+    uint16_t retval = page[addr] + (page[addr + 1] << 8);
+
+    return retval;
 }
