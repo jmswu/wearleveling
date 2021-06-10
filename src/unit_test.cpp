@@ -221,7 +221,7 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
         ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
         ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
-        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(512, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(35, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(36, pDebugData->bucketSize);
         ASSERT_EQ(0, pDebugData->indexBucketRead);
