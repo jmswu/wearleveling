@@ -3,7 +3,7 @@
 #include "wearleveling.h"
 
 const uint16_t PAGE_SIZE = 1024;
-static uint8_t page[PAGE_SIZE];
+static uint8_t page[PAGE_SIZE] = {0};
 
 uint8_t mock_pageErase(void);
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data);
