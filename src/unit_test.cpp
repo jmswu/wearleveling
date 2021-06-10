@@ -8,6 +8,7 @@ const uint16_t PAGE_SIZE = 1024;
 static uint8_t page[PAGE_SIZE] = {0};
 
 uint8_t mock_pageErase(void);
+uint8_t mock_formatPage(void);
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data);
 uint16_t mock_readTwoByte(uint32_t addr);
 namespace wearlevelingLibraryTest
@@ -288,12 +289,57 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(16, pDebugData->bucketSize);
         ASSERT_EQ(31, pDebugData->numOfBuckets);
     }
+
+    TEST_F(wearlevelingLibraryTest, init_formatPage_1)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 1024,
+            .dataSizeInByte = 15,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0xFF, page[2]);
+    }
+
+    TEST_F(wearlevelingLibraryTest, init_formatPage_2)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 1024,
+            .dataSizeInByte = 15,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        mock_formatPage();
+        wearleveling.init(&params);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x01, page[2]);   /* 0x01 is introfuce by mock_formatPage(), it indicats the wearleveling internal format is not called */
+    }
 }
 
 
 uint8_t mock_pageErase(void)
 {
     memset((void *)page, 0xFF, PAGE_SIZE);
+    return 1;
+}
+
+uint8_t mock_formatPage(void)
+{
+    page[0] = 0x34;
+    page[1] = 0x12;
+    page[2] = 0x01;
     return 1;
 }
 
