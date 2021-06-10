@@ -14,7 +14,7 @@ typedef struct
     uint16_t dataSizeInByte;
     uint16_t (*readTwoByte) (uint32_t addr);
     uint8_t (*writeTwoByte) (uint32_t addr, uint16_t data);
-    uint8_t (*pageErase) (uint16_t pageNum);
+    uint8_t (*pageErase) (void);
 }wearleveling_params_typeDef;
 
 typedef struct

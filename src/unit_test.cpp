@@ -5,7 +5,7 @@
 const uint16_t PAGE_SIZE = 1024;
 static uint8_t page[PAGE_SIZE];
 
-uint8_t mock_pageErase(uint16_t pageNum);
+uint8_t mock_pageErase(void);
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data);
 uint16_t mock_readTwoByte(uint32_t addr);
 namespace wearlevelingLibraryTest
@@ -30,17 +30,21 @@ namespace wearlevelingLibraryTest
 }
 
 
-uint8_t mock_pageErase(uint16_t pageNum)
+uint8_t mock_pageErase(void)
 {
-
+    (void)page;
+    return 0;
 }
 
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data)
 {
-
+    (void)addr;
+    (void)data;
+    return 0;
 }
 
 uint16_t mock_readTwoByte(uint32_t addr)
 {
-
+    (void)addr;
+    return 0;
 }
