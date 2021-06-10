@@ -84,6 +84,14 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0xFFFF,   mock_readTwoByte(4));
         ASSERT_EQ(0,        mock_readTwoByte(PAGE_SIZE));
     }
+
+    TEST_F(wearlevelingLibraryTest, mock_read_2)
+    {
+        mock_pageErase();
+        ASSERT_EQ(0xFFFF, mock_readTwoByte(0));   
+        mock_writeTwoByte(0, 0x1234);
+        ASSERT_EQ(0x1234, mock_readTwoByte(0));  
+    }
 }
 
 
