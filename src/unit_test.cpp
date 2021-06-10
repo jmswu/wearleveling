@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
 #include "gtest/gtest.h"
 #include "wearleveling.h"
 
@@ -14,12 +16,25 @@ namespace wearlevelingLibraryTest
     {
         public:
         private:
+            void randomizePageData(void)
+            {
+                for(unsigned i = 0; i < PAGE_SIZE; i++)
+                {
+                    page[i] = (uint8_t)rand();
+                }
+            }
         protected:
 
-        wearlevelingLibraryTest(){}
+        wearlevelingLibraryTest()
+        {
+            srand(time(NULL));
+        }
+
         virtual ~wearlevelingLibraryTest(){}
 
-        virtual void SetUp(){}
+        virtual void SetUp(){
+            randomizePageData();
+        }
         virtual void TearDown(){}
     };
 
