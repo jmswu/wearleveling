@@ -25,18 +25,18 @@ namespace wearlevelingLibraryTest
             }
         protected:
 
-        wearlevelingLibraryTest()
-        {
-            srand(time(NULL));
-        }
+            wearlevelingLibraryTest()
+            {
+                srand(time(NULL));
+            }
 
-        virtual ~wearlevelingLibraryTest(){}
+            virtual ~wearlevelingLibraryTest(){}
 
-        virtual void SetUp()
-        {
-            randomizePageData();
-        }
-        virtual void TearDown(){}
+            virtual void SetUp()
+            {
+                randomizePageData();
+            }
+            virtual void TearDown(){}
     };
 
     TEST_F(wearlevelingLibraryTest, mock_erase)
@@ -92,6 +92,141 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0xFFFF, mock_readTwoByte(0));   
         mock_writeTwoByte(0, 0x1234);
         ASSERT_EQ(0x1234, mock_readTwoByte(0));  
+    }
+
+    TEST_F(wearlevelingLibraryTest, init_1)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = PAGE_SIZE,
+            .dataSizeInByte = 10,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+        
+        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
+        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
+        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
+        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(10, pDebugData->params.dataSizeInByte);
+        ASSERT_EQ(12, pDebugData->bucketSize);
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        ASSERT_EQ(85, pDebugData->numOfBuckets);
+    }
+
+    TEST_F(wearlevelingLibraryTest, init_2)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = PAGE_SIZE,
+            .dataSizeInByte = 3,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+        
+        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
+        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
+        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
+        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(3, pDebugData->params.dataSizeInByte);
+        ASSERT_EQ(4, pDebugData->bucketSize);
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        ASSERT_EQ(255, pDebugData->numOfBuckets);
+    }
+
+    TEST_F(wearlevelingLibraryTest, init_3)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = PAGE_SIZE,
+            .dataSizeInByte = 4,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+        
+        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
+        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
+        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
+        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(4, pDebugData->params.dataSizeInByte);
+        ASSERT_EQ(6, pDebugData->bucketSize);
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        ASSERT_EQ(170, pDebugData->numOfBuckets);
+    }
+
+    TEST_F(wearlevelingLibraryTest, init_4)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = PAGE_SIZE,
+            .dataSizeInByte = 35,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+        
+        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
+        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
+        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
+        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(35, pDebugData->params.dataSizeInByte);
+        ASSERT_EQ(36, pDebugData->bucketSize);
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        ASSERT_EQ(28, pDebugData->numOfBuckets);
+    }
+
+    TEST_F(wearlevelingLibraryTest, init_5)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 512,
+            .dataSizeInByte = 35,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+        
+        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
+        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
+        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
+        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(35, pDebugData->params.dataSizeInByte);
+        ASSERT_EQ(36, pDebugData->bucketSize);
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        ASSERT_EQ(14, pDebugData->numOfBuckets);
     }
 }
 
