@@ -15,7 +15,6 @@ typedef struct
     uint16_t (*readTwoByte) (uint32_t addr);
     uint8_t (*writeTwoByte) (uint32_t addr, uint16_t data);
     uint8_t (*pageErase) (uint16_t pageNum);
-    uint8_t numOfPage;
 }wearleveling_params_typeDef;
 
 typedef struct
@@ -25,7 +24,6 @@ typedef struct
     uint16_t indexBucketWrite;
     uint16_t bucketSize;
     uint16_t numOfBuckets;
-    uint8_t indexPage;
 }wearleveling_state_typeDef;
 
 typedef struct 
