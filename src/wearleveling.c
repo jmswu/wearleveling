@@ -18,7 +18,7 @@ static uint8_t wearleveling_save(uint8_t * const pData);
 static uint8_t wearleveling_read(uint8_t * const pData);
 
 static uint16_t wearleveling_calculateBucketSize(void);
-static uint16_t wearleveling_calcualteNumOfBuckets(void);
+static uint16_t wearleveling_calculateNumOfBuckets(void);
 static uint16_t wearleveling_findIndexRead(void);
 static uint16_t wearleveling_findIndexWrite(void);
 // static uint8_t wearleveling_isEmpty(void);
@@ -46,7 +46,7 @@ static void wearleveling_init(wearleveling_params_typeDef * const pParams)
     memset((void *)&internalState, 0, sizeof(wearleveling_state_typeDef));
     internalState.params = *pParams;
     internalState.bucketSize = wearleveling_calculateBucketSize();
-    internalState.numOfBuckets = wearleveling_calcualteNumOfBuckets();
+    internalState.numOfBuckets = wearleveling_calculateNumOfBuckets();
 
     if (wearleveling_isFormated())
     {
@@ -78,7 +78,7 @@ static uint16_t wearleveling_calculateBucketSize(void)
     return size_dataPlusDirtyMark_inBytes % 2 ? size_dataPlusDirtyMark_inBytes + 1 : size_dataPlusDirtyMark_inBytes;
 }
 
-static uint16_t wearleveling_calcualteNumOfBuckets(void)
+static uint16_t wearleveling_calculateNumOfBuckets(void)
 {
     uint16_t capacityMinusFormatedString = internalState.params.pageCapacityInByte - sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
     return capacityMinusFormatedString / internalState.bucketSize;
