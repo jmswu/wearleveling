@@ -62,6 +62,17 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0x34, page[0]);
         ASSERT_EQ(0x12, page[1]);
     }
+
+    TEST_F(wearlevelingLibraryTest, mock_write_3)
+    {
+        mock_pageErase();
+        ASSERT_EQ(1, mock_writeTwoByte(0, 0x1234));
+        ASSERT_EQ(0, mock_writeTwoByte(1, 0x1234));
+        ASSERT_EQ(1, mock_writeTwoByte(2, 0x1234));
+        ASSERT_EQ(0, mock_writeTwoByte(3, 0x1234));
+        ASSERT_EQ(1, mock_writeTwoByte(4, 0x1234));
+        ASSERT_EQ(0, mock_writeTwoByte(PAGE_SIZE, 0x1234));
+    }
 }
 
 
@@ -74,6 +85,7 @@ uint8_t mock_pageErase(void)
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data)
 {
     if (addr >= PAGE_SIZE) return 0;
+    if (addr % 2) return 0;
     
     page[addr + 0] = (uint8_t)(data & 0xFF);
     page[addr + 1] = (uint8_t)((data >> 8) & 0xFF);
@@ -84,6 +96,7 @@ uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data)
 uint16_t mock_readTwoByte(uint32_t addr)
 {
     if (addr >= PAGE_SIZE) return 0;
+    if (addr % 2) return 0;
 
     uint16_t retval = page[addr] + (page[addr + 1] << 8);
 
