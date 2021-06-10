@@ -94,7 +94,7 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0x1234, mock_readTwoByte(0));  
     }
 
-    TEST_F(wearlevelingLibraryTest, init_1)
+    TEST_F(wearlevelingLibraryTest, init_assignment_1)
     {
         wearleveling_params_typeDef params = 
         {
@@ -115,13 +115,9 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
         ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(10, pDebugData->params.dataSizeInByte);
-        ASSERT_EQ(12, pDebugData->bucketSize);
-        ASSERT_EQ(0, pDebugData->indexBucketRead);
-        ASSERT_EQ(0, pDebugData->indexBucketWrite);
-        ASSERT_EQ(85, pDebugData->numOfBuckets);
     }
 
-    TEST_F(wearlevelingLibraryTest, init_2)
+    TEST_F(wearlevelingLibraryTest, init_bucksize_1)
     {
         wearleveling_params_typeDef params = 
         {
@@ -137,18 +133,12 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
-        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
-        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
         ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(3, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(4, pDebugData->bucketSize);
-        ASSERT_EQ(0, pDebugData->indexBucketRead);
-        ASSERT_EQ(0, pDebugData->indexBucketWrite);
-        ASSERT_EQ(255, pDebugData->numOfBuckets);
     }
 
-    TEST_F(wearlevelingLibraryTest, init_3)
+    TEST_F(wearlevelingLibraryTest, init_bucksize_2)
     {
         wearleveling_params_typeDef params = 
         {
@@ -164,18 +154,12 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
-        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
-        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
         ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(4, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(6, pDebugData->bucketSize);
-        ASSERT_EQ(0, pDebugData->indexBucketRead);
-        ASSERT_EQ(0, pDebugData->indexBucketWrite);
-        ASSERT_EQ(170, pDebugData->numOfBuckets);
     }
 
-    TEST_F(wearlevelingLibraryTest, init_4)
+    TEST_F(wearlevelingLibraryTest, init_bucksize_3)
     {
         wearleveling_params_typeDef params = 
         {
@@ -191,18 +175,12 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
-        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
-        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
         ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(35, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(36, pDebugData->bucketSize);
-        ASSERT_EQ(0, pDebugData->indexBucketRead);
-        ASSERT_EQ(0, pDebugData->indexBucketWrite);
-        ASSERT_EQ(28, pDebugData->numOfBuckets);
     }
 
-    TEST_F(wearlevelingLibraryTest, init_5)
+    TEST_F(wearlevelingLibraryTest, init_bucksize_4)
     {
         wearleveling_params_typeDef params = 
         {
@@ -218,15 +196,9 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
-        ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
-        ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
         ASSERT_EQ(512, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(35, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(36, pDebugData->bucketSize);
-        ASSERT_EQ(0, pDebugData->indexBucketRead);
-        ASSERT_EQ(0, pDebugData->indexBucketWrite);
-        ASSERT_EQ(14, pDebugData->numOfBuckets);
     }
 }
 
