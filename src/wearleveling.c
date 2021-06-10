@@ -20,8 +20,8 @@ static uint8_t wearleveling_read(uint8_t * const pData);
 static uint16_t wearleveling_calculateBucketSize(void);
 static uint16_t wearleveling_calculateNumOfBuckets(void);
 static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
-static uint16_t wearleveling_findIndexRead(void);
-static uint16_t wearleveling_findIndexWrite(void);
+static uint16_t wearleveling_findBucketIndexRead(void);
+static uint16_t wearleveling_findBucketIndexWrite(void);
 // static uint8_t wearleveling_isEmpty(void);
 // static uint8_t wearleveling_isFull(void);
 static uint8_t wearleveling_isFormated(void);
@@ -51,8 +51,8 @@ static void wearleveling_init(wearleveling_params_typeDef * const pParams)
 
     if (wearleveling_isFormated())
     {
-        internalState.indexBucketWrite = wearleveling_findIndexWrite();
-        internalState.indexBucketRead = wearleveling_findIndexRead();
+        internalState.indexBucketWrite = wearleveling_findBucketIndexWrite();
+        internalState.indexBucketRead = wearleveling_findBucketIndexRead();
     }
     else
     {
@@ -91,13 +91,13 @@ static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index)
     return (FORMATED_FLAG_OFFSET + (index * internalState.bucketSize));
 }
 
-static uint16_t wearleveling_findIndexRead(void)
+static uint16_t wearleveling_findBucketIndexRead(void)
 {
-    uint16_t indexWrite = wearleveling_findIndexWrite();
+    uint16_t indexWrite = wearleveling_findBucketIndexWrite();
     return indexWrite == 0 ? 0 : indexWrite - 1;
 }
 
-static uint16_t wearleveling_findIndexWrite(void)
+static uint16_t wearleveling_findBucketIndexWrite(void)
 {
     for(uint16_t i = 0; i < internalState.numOfBuckets; i++)
     {
