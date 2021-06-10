@@ -26,6 +26,8 @@ uint32_t wearleveling_getVersionNumber(void)
 
 static void wearleveling_init(wearleveling_params_typeDef * const pParams)
 {
+    if (pParams == NULL) return;
+
     memset((void *)&internalState, 0, sizeof(wearleveling_state_typeDef));
     internalState.params = *pParams;
     internalState.indexBucketRead = 0;
