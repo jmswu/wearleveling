@@ -326,6 +326,114 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0x12, page[1]);
         ASSERT_EQ(0x01, page[2]);   /* 0x01 is introfuce by mock_formatPage(), it indicats the wearleveling internal format is not called */
     }
+
+    TEST_F(wearlevelingLibraryTest, save_1)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 1024,
+            .dataSizeInByte = 1,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data [] = {0x11};
+
+        mock_pageErase();
+        wearleveling.init(&params);
+        wearleveling.save(dummy_data);
+
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]); 
+
+        ASSERT_EQ(0x11, page[2]);
+        ASSERT_EQ(0x55, page[3]); 
+    }
+
+    TEST_F(wearlevelingLibraryTest, save_2)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 1024,
+            .dataSizeInByte = 2,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data [] = {0x11, 0x22};
+
+        mock_pageErase();
+        wearleveling.init(&params);
+        wearleveling.save(dummy_data);
+
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]);
+
+        ASSERT_EQ(0x11, page[2]);
+        ASSERT_EQ(0x22, page[3]); 
+        ASSERT_EQ(0x55, page[4]);
+        ASSERT_EQ(0xFF, page[5]); 
+    }
+
+    TEST_F(wearlevelingLibraryTest, save_3)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 1024,
+            .dataSizeInByte = 3,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data [] = {0x11, 0x22, 0x33};
+
+        mock_pageErase();
+        wearleveling.init(&params);
+        wearleveling.save(dummy_data);
+
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x34, page[0]);
+
+        ASSERT_EQ(0x11, page[2]);
+        ASSERT_EQ(0x22, page[3]); 
+        ASSERT_EQ(0x33, page[4]);
+        ASSERT_EQ(0x55, page[5]); 
+    }
+
+    TEST_F(wearlevelingLibraryTest, save_4)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 1024,
+            .dataSizeInByte = 10,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data [] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA};
+
+        mock_pageErase();
+        wearleveling.init(&params);
+        wearleveling.save(dummy_data);
+
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x34, page[0]);
+
+        ASSERT_EQ(0x11, page[2]);
+        ASSERT_EQ(0x22, page[3]); 
+        ASSERT_EQ(0x33, page[4]);
+        ASSERT_EQ(0x44, page[5]);
+        ASSERT_EQ(0x55, page[6]); 
+        ASSERT_EQ(0x66, page[7]); 
+        ASSERT_EQ(0x77, page[8]); 
+        ASSERT_EQ(0x88, page[9]); 
+        ASSERT_EQ(0x99, page[10]); 
+        ASSERT_EQ(0xAA, page[11]); 
+    }
 }
 
 
