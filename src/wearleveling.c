@@ -17,6 +17,8 @@ static void wearleveling_init(wearleveling_params_typeDef * const pParams);
 static uint8_t wearleveling_save(uint8_t * const pData);
 static uint8_t wearleveling_read(uint8_t * const pData);
 
+static uint8_t wearleveling_saveDataToAddress(const uint32_t addr, uint8_t * const pData);
+
 static uint16_t wearleveling_calculateBucketSize(void);
 static uint16_t wearleveling_calculateNumOfBuckets(void);
 static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
@@ -65,25 +67,45 @@ static void wearleveling_init(wearleveling_params_typeDef * const pParams)
     }
 }
 
-static uint8_t wearleveling_save(uint8_t * const pData)
+static uint8_t wearleveling_saveDataToAddress(const uint32_t addr, uint8_t * const pData)
 {
     if (pData == NULL) return 0;
 
     uint16_t tmpTwoBytes;
     uint32_t offset;
-    const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
 
     uint16_t numOfCopy = internalState.params.dataSizeInByte >> 1;
     for(uint16_t i = 0; i < numOfCopy; i++)
     {
         offset = i * 2;
         tmpTwoBytes = wearleveling_getTwoByte(i, pData);
-        internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
+        if (internalState.params.writeTwoByte(addr + offset, tmpTwoBytes) == 0) return 0;
     }
 
     offset = numOfCopy * 2;
     tmpTwoBytes = wearleveling_assembleLastTwoByte(pData);
-    internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
+    if (internalState.params.writeTwoByte(addr + offset, tmpTwoBytes) == 0) return 0;
+
+    return 1;
+}
+
+static uint8_t wearleveling_save(uint8_t * const pData)
+{
+    if (pData == NULL) return 0;
+
+    const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
+    wearleveling_saveDataToAddress(ADDRESS, pData);
+    // uint16_t numOfCopy = internalState.params.dataSizeInByte >> 1;
+    // for(uint16_t i = 0; i < numOfCopy; i++)
+    // {
+    //     offset = i * 2;
+    //     tmpTwoBytes = wearleveling_getTwoByte(i, pData);
+    //     internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
+    // }
+
+    // offset = numOfCopy * 2;
+    // tmpTwoBytes = wearleveling_assembleLastTwoByte(pData);
+    // internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
 
     return 1;
 }
