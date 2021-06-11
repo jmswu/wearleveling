@@ -33,6 +33,7 @@ static uint8_t wearleveling_isFormated(void);
 static uint8_t wearleveling_isEvenNumber(uint16_t number);
 static void wearleveling_resetIndex(void);
 static void wearleveling_formatPage(void);
+static void wearleveling_updateBuckietIndexReadWrite(void);
 
 const wearleveling_typeDef wearleveling = 
 {
@@ -100,8 +101,7 @@ static uint8_t wearleveling_save(uint8_t * const pData)
     }
 
     const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
-    internalState.indexBucketWrite++;
-    internalState.indexBucketRead = wearleveling_findBucketIndexRead();
+    wearleveling_updateBuckietIndexReadWrite();
     return wearleveling_saveDataToAddress(ADDRESS, pData);
 }
 
@@ -221,6 +221,12 @@ static void wearleveling_formatPage(void)
 {
     internalState.params.pageErase();
     internalState.params.writeTwoByte(0x00, WEARLEVELING_LIB_FORMATED_FLAG);
+}
+
+static void wearleveling_updateBuckietIndexReadWrite(void)
+{
+    internalState.indexBucketWrite++;
+    internalState.indexBucketRead = wearleveling_findBucketIndexRead();
 }
 
 
