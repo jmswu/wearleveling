@@ -23,6 +23,7 @@ static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
 static uint16_t wearleveling_findBucketIndexRead(void);
 static uint16_t wearleveling_findBucketIndexWrite(void);
 static uint16_t wearleveling_getTwoByte(uint16_t index, uint8_t * const pData);
+static uint16_t wearleveling_assembleLastTwoByte(uint8_t * const pData);
 static uint8_t wearleveling_getLastbyte(uint8_t * const pData);
 // static uint8_t wearleveling_isEmpty(void);
 // static uint8_t wearleveling_isFull(void);
@@ -80,20 +81,11 @@ static uint8_t wearleveling_save(uint8_t * const pData)
         internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
     }
 
-    if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte))
-    {
-        tmpTwoBytes = (WEARLEVELING_LIB_EMPTY_FLAG << 8) + WEARLEVELING_LIB_DIRTY_FLAG;
-    }
-    else
-    {
-        tmpTwoBytes = (WEARLEVELING_LIB_DIRTY_FLAG << 8) + wearleveling_getLastbyte(pData);
-    }
-
     offset = numOfCopy * 2;
+    tmpTwoBytes = wearleveling_assembleLastTwoByte(pData);
     internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
 
-    (void)pData;
-    return 0;
+    return 1;
 }
 
 static uint8_t wearleveling_read(uint8_t * const pData)
@@ -151,6 +143,21 @@ static uint16_t wearleveling_getTwoByte(uint16_t index, uint8_t * const pData)
     tmpTwobyte = (higher_byte<< 8) + lower_byte;
 
     return tmpTwobyte;
+}
+
+static uint16_t wearleveling_assembleLastTwoByte(uint8_t * const pData)
+{
+    if (pData == NULL) return 0;
+    uint16_t twoByte = 0;
+    if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte))
+    {
+        twoByte = (WEARLEVELING_LIB_EMPTY_FLAG << 8) + WEARLEVELING_LIB_DIRTY_FLAG;
+    }
+    else
+    {
+        twoByte = (WEARLEVELING_LIB_DIRTY_FLAG << 8) + wearleveling_getLastbyte(pData);
+    }
+    return twoByte;
 }
 
 static uint8_t wearleveling_getLastbyte(uint8_t * const pData)
