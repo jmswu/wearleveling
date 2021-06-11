@@ -28,7 +28,7 @@ static uint16_t wearleveling_getTwoByte(uint16_t index, uint8_t * const pData);
 static uint16_t wearleveling_assembleLastTwoByte(uint8_t * const pData);
 static uint8_t wearleveling_getLastbyte(uint8_t * const pData);
 // static uint8_t wearleveling_isEmpty(void);
-// static uint8_t wearleveling_isFull(void);
+static uint8_t wearleveling_isFull(void);
 static uint8_t wearleveling_isFormated(void);
 static uint8_t wearleveling_isEvenNumber(uint16_t number);
 static void wearleveling_resetIndex(void);
@@ -92,6 +92,11 @@ static uint8_t wearleveling_saveDataToAddress(const uint32_t addr, uint8_t * con
 static uint8_t wearleveling_save(uint8_t * const pData)
 {
     if (pData == NULL) return 0;
+
+    if (wearleveling_isFull())
+    {
+        internalState.params.pageErase();
+    }
 
     const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
     return wearleveling_saveDataToAddress(ADDRESS, pData);
@@ -187,10 +192,10 @@ static uint8_t wearleveling_getLastbyte(uint8_t * const pData)
 //     }
 // }
 
-// static uint8_t wearleveling_isFull(void)
-// {
-//     return internalState.indexBucketWrite == internalState.numOfBuckets ? 1 : 0;
-// }
+static uint8_t wearleveling_isFull(void)
+{
+    return internalState.indexBucketWrite >= internalState.numOfBuckets ? 1 : 0;
+}
 
 static uint8_t wearleveling_isFormated(void)
 {
