@@ -95,17 +95,6 @@ static uint8_t wearleveling_save(uint8_t * const pData)
 
     const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
     wearleveling_saveDataToAddress(ADDRESS, pData);
-    // uint16_t numOfCopy = internalState.params.dataSizeInByte >> 1;
-    // for(uint16_t i = 0; i < numOfCopy; i++)
-    // {
-    //     offset = i * 2;
-    //     tmpTwoBytes = wearleveling_getTwoByte(i, pData);
-    //     internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
-    // }
-
-    // offset = numOfCopy * 2;
-    // tmpTwoBytes = wearleveling_assembleLastTwoByte(pData);
-    // internalState.params.writeTwoByte(ADDRESS + offset, tmpTwoBytes);
 
     return 1;
 }
