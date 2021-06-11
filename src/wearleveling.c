@@ -101,6 +101,7 @@ static uint8_t wearleveling_save(uint8_t * const pData)
 
     const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
     internalState.indexBucketWrite++;
+    internalState.indexBucketRead = wearleveling_findBucketIndexRead();
     return wearleveling_saveDataToAddress(ADDRESS, pData);
 }
 
@@ -130,8 +131,8 @@ static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index)
 
 static uint16_t wearleveling_findBucketIndexRead(void)
 {
-    uint16_t indexWrite = wearleveling_findBucketIndexWrite();
-    return indexWrite == 0 ? 0 : indexWrite - 1;
+    uint16_t writeIndex = internalState.indexBucketWrite;
+    return writeIndex == 0 ? 0 : writeIndex - 1;
 }
 
 static uint16_t wearleveling_findBucketIndexWrite(void)
