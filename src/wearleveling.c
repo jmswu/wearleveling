@@ -137,12 +137,28 @@ static uint16_t wearleveling_findBucketIndexRead(void)
 
 static uint16_t wearleveling_findBucketIndexWrite(void)
 {
+    const uint16_t EMPTY_DATA = (WEARLEVELING_LIB_EMPTY_FLAG << 8) + WEARLEVELING_LIB_EMPTY_FLAG;
+
     for(uint16_t i = 0; i < internalState.numOfBuckets; i++)
     {
         const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(i);
-        const uint8_t DIRTY_FLAG = (uint8_t)(internalState.params.readTwoByte(ADDRESS) & 0xFF);
-        if (DIRTY_FLAG == WEARLEVELING_LIB_EMPTY_FLAG)
+        const uint16_t DATA_1 = internalState.params.readTwoByte(ADDRESS);
+
+        if ((i == 0) && (DATA_1 == EMPTY_DATA))
+        {
+            return 0;
+        }
+
+        const uint16_t DATA_2 = internalState.params.readTwoByte(ADDRESS - 2) & 0xFF;
+        if ((i == internalState.numOfBuckets - 1) && (DATA_2 == WEARLEVELING_LIB_DIRTY_FLAG))
+        {
+            return internalState.numOfBuckets;
+        }
+
+        if ((i < internalState.numOfBuckets - 1) && (DATA_1 == EMPTY_DATA))
+        {
             return i;
+        }
     }
 
     return 0;
