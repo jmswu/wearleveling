@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(uint_test)
+project(unit_test)
 set(SRC_FOLDER src)
 file(GLOB_RECURSE SRC_CXX_FILES CMAKE_CONFIGURE_DEPENDS ${SRC_FOLDER}/*.cpp)
 file(GLOB_RECURSE SRC_C_FILES CMAKE_CONFIGURE_DEPENDS ${SRC_FOLDER}/*.c)
