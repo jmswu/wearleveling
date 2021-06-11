@@ -435,7 +435,7 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0xAA, page[11]); 
     }
 
-    TEST_F(wearlevelingLibraryTest, save_5)
+    TEST_F(wearlevelingLibraryTest, save_5_two_entry)
     {
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
 
