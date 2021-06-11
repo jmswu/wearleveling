@@ -95,7 +95,8 @@ static uint8_t wearleveling_save(uint8_t * const pData)
 
     if (wearleveling_isFull())
     {
-        internalState.params.pageErase();
+        wearleveling_formatPage();
+        wearleveling_resetIndex();
     }
 
     const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
