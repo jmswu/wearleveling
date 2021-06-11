@@ -99,6 +99,7 @@ static uint8_t wearleveling_save(uint8_t * const pData)
     }
 
     const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketWrite);
+    internalState.indexBucketWrite++;
     return wearleveling_saveDataToAddress(ADDRESS, pData);
 }
 
