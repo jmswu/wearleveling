@@ -58,6 +58,7 @@ static void wearleveling_init(wearleveling_params_typeDef * const pParams)
 
     if (wearleveling_isFormated())
     {
+        printf("isFormated: %u\n", wearleveling_findBucketIndexWrite());
         internalState.indexBucketWrite = wearleveling_findBucketIndexWrite();
         internalState.indexBucketRead = wearleveling_findBucketIndexRead();
     }
@@ -137,27 +138,26 @@ static uint16_t wearleveling_findBucketIndexRead(void)
 
 static uint16_t wearleveling_findBucketIndexWrite(void)
 {
-    const uint16_t EMPTY_DATA = (WEARLEVELING_LIB_EMPTY_FLAG << 8) + WEARLEVELING_LIB_EMPTY_FLAG;
-
     for(uint16_t i = 0; i < internalState.numOfBuckets; i++)
     {
-        const uint32_t ADDRESS = wearleveling_calculateAddressFromBucketIndex(i);
-        const uint16_t DATA_1 = internalState.params.readTwoByte(ADDRESS);
+        const uint32_t ADDRESS_OF_NEXT_BUCKET = wearleveling_calculateAddressFromBucketIndex(i + 1);
+        const uint16_t LAST_TWO_BYTES = internalState.params.readTwoByte(ADDRESS_OF_NEXT_BUCKET - 2);
 
-        if ((i == 0) && (DATA_1 == EMPTY_DATA))
+        printf("index: %u, addr: %02X, last two byte: %02X\n", i, ADDRESS_OF_NEXT_BUCKET, LAST_TWO_BYTES);
+
+        uint8_t dirtyFlag = 0;
+        if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte))
         {
-            return 0;
+            dirtyFlag = (uint8_t)(LAST_TWO_BYTES);
+        }
+        else
+        {
+            dirtyFlag = (uint8_t)(LAST_TWO_BYTES >> 8);
         }
 
-        const uint16_t DATA_2 = internalState.params.readTwoByte(ADDRESS - 2) & 0xFF;
-        if ((i == internalState.numOfBuckets - 1) && (DATA_2 == WEARLEVELING_LIB_DIRTY_FLAG))
+        if ((dirtyFlag != WEARLEVELING_LIB_DIRTY_FLAG) && (dirtyFlag == WEARLEVELING_LIB_EMPTY_FLAG))
         {
-            return internalState.numOfBuckets;
-        }
-
-        if ((i < internalState.numOfBuckets - 1) && (DATA_1 == EMPTY_DATA))
-        {
-            return i;
+            return i + 1;
         }
     }
 
