@@ -709,13 +709,42 @@ namespace wearlevelingLibraryTest
         wearleveling.init(&params);
         ASSERT_EQ(3, pDebugData->indexBucketRead);
         ASSERT_EQ(4, pDebugData->indexBucketWrite);
+    }
 
-        printf("%02X %02X\n", page[1], page[0]);
-        for(int i = 2; i < PAGE_SIZE; i++)
+    TEST_F(wearlevelingLibraryTest, init_calculate_write_index_4)
+    {
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+
+        wearleveling_params_typeDef params = 
         {
-            if (((i - 2) % pDebugData->bucketSize) == 0) printf("\n");
-            printf("%02X ", page[i]);
-        }
+            .pageCapacityInByte = 512,
+            .dataSizeInByte = 7,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data1 [] = { 0xFF, 0xFF, 0x30, 0x40, 0x50, 0x60, 0x70 };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        wearleveling.save(dummy_data1);
+        wearleveling.save(dummy_data1);
+        wearleveling.save(dummy_data1);
+        wearleveling.save(dummy_data1);
+        ASSERT_EQ(4, pDebugData->indexBucketWrite);
+
+        pDebugData->indexBucketRead = 0;
+        pDebugData->indexBucketWrite = 0;
+
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+
+        wearleveling.init(&params);
+        ASSERT_EQ(3, pDebugData->indexBucketRead);
+        ASSERT_EQ(4, pDebugData->indexBucketWrite);
     }
 }
 
