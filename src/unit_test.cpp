@@ -806,8 +806,6 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, init_read_1)
     {
-        //wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
-
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 20,
