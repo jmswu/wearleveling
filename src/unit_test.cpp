@@ -717,24 +717,23 @@ namespace wearlevelingLibraryTest
 
         wearleveling_params_typeDef params = 
         {
-            .pageCapacityInByte = 512,
-            .dataSizeInByte = 7,
+            .pageCapacityInByte = 20,
+            .dataSizeInByte = 5,
             .readTwoByte = mock_readTwoByte,
             .writeTwoByte = mock_writeTwoByte,
             .pageErase = mock_pageErase,
         };
 
-        uint8_t dummy_data1 [] = { 0xFF, 0xFF, 0x30, 0x40, 0x50, 0x60, 0x70 };
+        uint8_t dummy_data1 [] = { 0xFF, 0xFF, 0x30, 0x40, 0x50, 0x60 };
 
         mock_pageErase();
         wearleveling.init(&params);
 
         ASSERT_EQ(0, pDebugData->indexBucketWrite);
         wearleveling.save(dummy_data1);
+        ASSERT_EQ(1, pDebugData->indexBucketWrite);
         wearleveling.save(dummy_data1);
-        wearleveling.save(dummy_data1);
-        wearleveling.save(dummy_data1);
-        ASSERT_EQ(4, pDebugData->indexBucketWrite);
+        ASSERT_EQ(2, pDebugData->indexBucketWrite);
 
         pDebugData->indexBucketRead = 0;
         pDebugData->indexBucketWrite = 0;
@@ -743,8 +742,10 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0, pDebugData->indexBucketWrite);
 
         wearleveling.init(&params);
-        ASSERT_EQ(3, pDebugData->indexBucketRead);
-        ASSERT_EQ(4, pDebugData->indexBucketWrite);
+        ASSERT_EQ(1, pDebugData->indexBucketRead);
+        ASSERT_EQ(2, pDebugData->indexBucketWrite);
+
+        printf("bucket size: %u, numOfBucket: %u\n", pDebugData->bucketSize, pDebugData->numOfBuckets);
     }
 }
 
