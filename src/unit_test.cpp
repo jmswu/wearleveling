@@ -829,6 +829,28 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(dummy_data_write[3], dummy_data_read[3]);
         ASSERT_EQ(dummy_data_write[4], dummy_data_read[4]);
     }
+
+    TEST_F(wearlevelingLibraryTest, init_read_2)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 20,
+            .dataSizeInByte = 6,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data_write [6] = { 0xFF, 0xFF, 0x30, 0x40, 0x50, 0x60};
+        uint8_t dummy_data_read [6] = { 0 };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling.save(dummy_data_write);
+        wearleveling.read(dummy_data_read);
+        ASSERT_EQ(0, memcmp(dummy_data_read, dummy_data_write, sizeof(dummy_data_write)));
+    }
 }
 
 

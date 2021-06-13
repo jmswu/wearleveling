@@ -113,15 +113,12 @@ static uint8_t wearleveling_read(uint8_t * const pData)
     const uint16_t NUM_OF_READ = internalState.params.dataSizeInByte >> 1;
     uint16_t tmpTwoByte = 0;
 
-    printf("addr to read: %02x, numOfRead: %u\n", ADDR_TO_READ, NUM_OF_READ);
-
     for(uint16_t i = 0; i < NUM_OF_READ; i++)
     {
         tmpTwoByte = internalState.params.readTwoByte(ADDR_TO_READ + (i * 2));
         uint16_t index = i * 2;
         pData[index] = (uint8_t)(tmpTwoByte);
         pData[index + 1] = (uint8_t)(tmpTwoByte >> 8);
-        printf("twoByte: %02X[%u], %02X[%u]\n", pData[index], index , pData[index + 1], index + 1);
     }
 
     tmpTwoByte = internalState.params.readTwoByte(ADDR_TO_READ + (NUM_OF_READ * 2));
@@ -129,7 +126,6 @@ static uint8_t wearleveling_read(uint8_t * const pData)
     if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte) == 0)
     {
         pData[NUM_OF_READ * 2] = (uint8_t)tmpTwoByte;
-        printf("lastByte: %02X[%u]\n", pData[NUM_OF_READ * 2], NUM_OF_READ * 2);
     }
 
     return 1;
