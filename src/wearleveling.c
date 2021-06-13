@@ -107,8 +107,27 @@ static uint8_t wearleveling_save(uint8_t * const pData)
 
 static uint8_t wearleveling_read(uint8_t * const pData)
 {
-    (void)pData;
-    return 0;
+    if (pData == NULL) return 0;
+
+    const uint32_t ADDR_TO_READ = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketRead);
+    const uint16_t NUM_OF_READ = internalState.params.dataSizeInByte >> 1;
+    uint16_t tmpTwoByte = 0;
+
+    for(uint16_t i = 0; i < NUM_OF_READ; i++)
+    {
+        tmpTwoByte = internalState.params.readTwoByte(ADDR_TO_READ + (i * 2));
+        pData[i] = (uint8_t)(tmpTwoByte);
+        pData[i + 1] = (uint8_t)(tmpTwoByte >> 8);
+    }
+
+    tmpTwoByte = internalState.params.readTwoByte(ADDR_TO_READ + (NUM_OF_READ * 2));
+
+    if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte) == 0)
+    {
+        pData[NUM_OF_READ * 2] = (uint8_t)tmpTwoByte;
+    }
+
+    return 1;
 }
 
 static uint16_t wearleveling_calculateBucketSize(void)
