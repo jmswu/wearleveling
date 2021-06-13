@@ -38,6 +38,14 @@ namespace wearlevelingLibraryTest
                 randomizePageData();
             }
             virtual void TearDown(){}
+
+            void fillRandomData(uint8_t * const pData, unsigned dataSize)
+            {
+                for(unsigned i = 0; i < dataSize; i++)
+                {
+                    pData[i] = (uint8_t)(rand());
+                }
+            }
     };
 
     TEST_F(wearlevelingLibraryTest, mock_erase)
