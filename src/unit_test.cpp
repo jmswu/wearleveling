@@ -290,6 +290,28 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(31, pDebugData->numOfBuckets);
     }
 
+    TEST_F(wearlevelingLibraryTest, init_numOfBuckets_5)
+    {
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 34,
+            .dataSizeInByte = 15,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+        
+        ASSERT_EQ(34, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(15, pDebugData->params.dataSizeInByte);
+        ASSERT_EQ(16, pDebugData->bucketSize);
+        ASSERT_EQ(2, pDebugData->numOfBuckets);
+    }
+
     TEST_F(wearlevelingLibraryTest, init_formatPage_1)
     {
         wearleveling_params_typeDef params = 
