@@ -767,6 +767,34 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(1, pDebugData->indexBucketRead);
         ASSERT_EQ(2, pDebugData->indexBucketWrite);
     }
+
+    TEST_F(wearlevelingLibraryTest, init_roll_over_1)
+    {
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
+
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 20,
+            .dataSizeInByte = 5,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data1 [] = { 0xFF, 0xFF, 0x30, 0x40, 0x50, 0x60 };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        ASSERT_EQ(0, pDebugData->indexBucketWrite);
+        wearleveling.save(dummy_data1);
+        wearleveling.save(dummy_data1);
+        wearleveling.save(dummy_data1);
+        ASSERT_EQ(3, pDebugData->indexBucketWrite);
+        wearleveling.save(dummy_data1);
+        ASSERT_EQ(0, pDebugData->indexBucketRead);
+        ASSERT_EQ(1, pDebugData->indexBucketWrite);
+    }
 }
 
 
