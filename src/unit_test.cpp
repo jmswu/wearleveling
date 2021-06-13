@@ -766,8 +766,6 @@ namespace wearlevelingLibraryTest
         wearleveling.init(&params);
         ASSERT_EQ(1, pDebugData->indexBucketRead);
         ASSERT_EQ(2, pDebugData->indexBucketWrite);
-
-        printf("bucket size: %u, numOfBucket: %u\n", pDebugData->bucketSize, pDebugData->numOfBuckets);
     }
 }
 
