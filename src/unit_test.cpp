@@ -5,8 +5,8 @@
 #include "gtest/gtest.h"
 #include "wearleveling.h"
 
-const uint16_t PAGE_SIZE = 1024;
-static uint8_t page[PAGE_SIZE] = {0};
+const uint16_t PAGE_SIZE_32K = 1024 * 32;
+static uint8_t page[PAGE_SIZE_32K] = {0};
 
 uint8_t mock_pageErase(void);
 uint8_t mock_formatPage(void);
@@ -20,7 +20,7 @@ namespace wearlevelingLibraryTest
         private:
             void randomizePageData(void)
             {
-                for(unsigned i = 0; i < PAGE_SIZE; i++)
+                for(unsigned i = 0; i < PAGE_SIZE_32K; i++)
                 {
                     page[i] = (uint8_t)rand();
                 }
@@ -56,7 +56,7 @@ namespace wearlevelingLibraryTest
     TEST_F(wearlevelingLibraryTest, mock_erase)
     {
         mock_pageErase();
-        for(unsigned i = 0; i < PAGE_SIZE; i++)
+        for(unsigned i = 0; i < PAGE_SIZE_32K; i++)
         {
             ASSERT_EQ(0xFF, page[i]);
         }
@@ -65,7 +65,7 @@ namespace wearlevelingLibraryTest
     TEST_F(wearlevelingLibraryTest, mock_write_1)
     {
         mock_pageErase();
-        ASSERT_EQ(0, mock_writeTwoByte(PAGE_SIZE, 0x00));
+        ASSERT_EQ(0, mock_writeTwoByte(PAGE_SIZE_32K, 0x00));
         ASSERT_EQ(0xFF, page[0]);
         ASSERT_EQ(0xFF, page[1]);
     }
@@ -86,7 +86,7 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(1, mock_writeTwoByte(2, 0x1234));
         ASSERT_EQ(0, mock_writeTwoByte(3, 0x1234));
         ASSERT_EQ(1, mock_writeTwoByte(4, 0x1234));
-        ASSERT_EQ(0, mock_writeTwoByte(PAGE_SIZE, 0x1234));
+        ASSERT_EQ(0, mock_writeTwoByte(PAGE_SIZE_32K, 0x1234));
     }
 
     TEST_F(wearlevelingLibraryTest, mock_read_1)
@@ -97,7 +97,7 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0xFFFF,   mock_readTwoByte(2));
         ASSERT_EQ(0,        mock_readTwoByte(3));
         ASSERT_EQ(0xFFFF,   mock_readTwoByte(4));
-        ASSERT_EQ(0,        mock_readTwoByte(PAGE_SIZE));
+        ASSERT_EQ(0,        mock_readTwoByte(PAGE_SIZE_32K));
     }
 
     TEST_F(wearlevelingLibraryTest, mock_read_2)
@@ -112,7 +112,7 @@ namespace wearlevelingLibraryTest
     {
         wearleveling_params_typeDef params = 
         {
-            .pageCapacityInByte = PAGE_SIZE,
+            .pageCapacityInByte = PAGE_SIZE_32K,
             .dataSizeInByte = 10,
             .readTwoByte = mock_readTwoByte,
             .writeTwoByte = mock_writeTwoByte,
@@ -127,7 +127,7 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(mock_pageErase, pDebugData->params.pageErase);
         ASSERT_EQ(mock_writeTwoByte, pDebugData->params.writeTwoByte);
         ASSERT_EQ(mock_readTwoByte, pDebugData->params.readTwoByte);
-        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(PAGE_SIZE_32K, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(10, pDebugData->params.dataSizeInByte);
     }
 
@@ -135,7 +135,7 @@ namespace wearlevelingLibraryTest
     {
         wearleveling_params_typeDef params = 
         {
-            .pageCapacityInByte = PAGE_SIZE,
+            .pageCapacityInByte = PAGE_SIZE_32K,
             .dataSizeInByte = 3,
             .readTwoByte = mock_readTwoByte,
             .writeTwoByte = mock_writeTwoByte,
@@ -147,7 +147,7 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(PAGE_SIZE_32K, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(3, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(4, pDebugData->bucketSize);
     }
@@ -156,7 +156,7 @@ namespace wearlevelingLibraryTest
     {
         wearleveling_params_typeDef params = 
         {
-            .pageCapacityInByte = PAGE_SIZE,
+            .pageCapacityInByte = PAGE_SIZE_32K,
             .dataSizeInByte = 4,
             .readTwoByte = mock_readTwoByte,
             .writeTwoByte = mock_writeTwoByte,
@@ -168,7 +168,7 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(PAGE_SIZE_32K, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(4, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(6, pDebugData->bucketSize);
     }
@@ -177,7 +177,7 @@ namespace wearlevelingLibraryTest
     {
         wearleveling_params_typeDef params = 
         {
-            .pageCapacityInByte = PAGE_SIZE,
+            .pageCapacityInByte = PAGE_SIZE_32K,
             .dataSizeInByte = 35,
             .readTwoByte = mock_readTwoByte,
             .writeTwoByte = mock_writeTwoByte,
@@ -189,7 +189,7 @@ namespace wearlevelingLibraryTest
 
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         
-        ASSERT_EQ(PAGE_SIZE, pDebugData->params.pageCapacityInByte);
+        ASSERT_EQ(PAGE_SIZE_32K, pDebugData->params.pageCapacityInByte);
         ASSERT_EQ(35, pDebugData->params.dataSizeInByte);
         ASSERT_EQ(36, pDebugData->bucketSize);
     }
@@ -981,12 +981,48 @@ namespace wearlevelingLibraryTest
             ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, DATA_SIZE)); 
         }
     } 
+
+    TEST_F(wearlevelingLibraryTest, general_1)
+    {
+        const uint16_t DATA_SIZE = 1024;
+
+        for(uint16_t loop = 0; loop < 200; loop++)
+        {
+            const uint16_t rand_cap = rand() % 1024 + 10;   /* random capacity, min = 10    */
+            const uint16_t rand_size = rand() % 64 + 1;     /* random data size, min = 1    */
+            const uint16_t loop_save = rand() % 32 + 1;     /* random save loop, min = 1    */
+            const uint16_t loop_read = rand() % 32 + 1;     /* random read loop, min = 1    */
+            wearleveling_params_typeDef params = 
+            {
+                .pageCapacityInByte = (uint16_t)(rand_cap + rand_size),
+                .dataSizeInByte = rand_size,
+                .readTwoByte = mock_readTwoByte,
+                .writeTwoByte = mock_writeTwoByte,
+                .pageErase = mock_pageErase,
+            };
+
+            uint8_t dummy_data_write [DATA_SIZE] = { 0 };
+            uint8_t dummy_data_read [DATA_SIZE] = { 0 };
+
+            mock_pageErase();
+            wearleveling.init(&params);
+
+            const uint16_t NUM_OF_TESTS = 1000;
+            for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
+            {
+                fillRandomData(dummy_data_write, rand_size);
+                for(uint16_t tmp = 0; tmp < loop_save; tmp++) wearleveling.save(dummy_data_write);
+                for(uint16_t tmp = 0; tmp < loop_read; tmp++) wearleveling.read(dummy_data_read);  
+                ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, rand_size)); 
+            }
+        }
+    }
 }
 
 
 uint8_t mock_pageErase(void)
 {
-    memset((void *)page, 0xFF, PAGE_SIZE);
+    memset((void *)page, 0xFF, PAGE_SIZE_32K);
     return 1;
 }
 
@@ -1000,7 +1036,7 @@ uint8_t mock_formatPage(void)
 
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data)
 {
-    if (addr >= PAGE_SIZE) return 0;
+    if (addr >= PAGE_SIZE_32K) return 0;
     if (addr % 2) return 0;
     
     page[addr + 0] = (uint8_t)(data & 0xFF);
@@ -1011,7 +1047,7 @@ uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data)
 
 uint16_t mock_readTwoByte(uint32_t addr)
 {
-    if (addr >= PAGE_SIZE) return 0;
+    if (addr >= PAGE_SIZE_32K) return 0;
     if (addr % 2) return 0;
 
     uint16_t retval = page[addr] + (page[addr + 1] << 8);
