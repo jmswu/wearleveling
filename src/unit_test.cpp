@@ -24,6 +24,7 @@ namespace wearlevelingLibraryTest
                     page[i] = (uint8_t)rand();
                 }
             }
+            
         protected:
 
             wearlevelingLibraryTest()
@@ -907,6 +908,96 @@ namespace wearlevelingLibraryTest
             ASSERT_EQ(0, memcmp(dummy_data_read, dummy_data_write, sizeof(dummy_data_write)));
         }
     }
+
+    TEST_F(wearlevelingLibraryTest, init_read_5_random_data)
+    {
+        const uint16_t DATA_SIZE = 7;
+
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 20,
+            .dataSizeInByte = DATA_SIZE,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data_write [DATA_SIZE] = { 0 };
+        uint8_t dummy_data_read [DATA_SIZE] = { 0 };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        const uint16_t NUM_OF_TESTS = 1000;
+        for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
+        {
+            for(uint16_t j = 0; j < rand() % 16; j++)
+            {
+                fillRandomData(dummy_data_write, DATA_SIZE);
+                wearleveling.save(dummy_data_write);
+            }
+
+            wearleveling.read(dummy_data_read);
+            ASSERT_EQ(dummy_data_write[0], dummy_data_read[0]);
+            ASSERT_EQ(dummy_data_write[1], dummy_data_read[1]);
+            ASSERT_EQ(dummy_data_write[2], dummy_data_read[2]);
+            ASSERT_EQ(dummy_data_write[3], dummy_data_read[3]);
+            ASSERT_EQ(dummy_data_write[4], dummy_data_read[4]);
+            ASSERT_EQ(dummy_data_write[5], dummy_data_read[5]);
+            ASSERT_EQ(dummy_data_write[6], dummy_data_read[6]);
+        }
+    }    
+
+    TEST_F(wearlevelingLibraryTest, init_read_6_random_data)
+    {
+        const uint16_t DATA_SIZE = 7;
+
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = 20,
+            .dataSizeInByte = DATA_SIZE,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data_write [DATA_SIZE] = { 0 };
+        uint8_t dummy_data_read [DATA_SIZE] = { 0 };
+
+        mock_pageErase();
+        wearleveling.init(&params);
+
+        const uint16_t NUM_OF_TESTS = 1000;
+        for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
+        {
+
+            fillRandomData(dummy_data_write, DATA_SIZE);
+            wearleveling.save(dummy_data_write);
+
+            for(uint16_t j = 0; j < rand() % 16; j++)
+            {
+                wearleveling.read(dummy_data_read);
+            }
+
+            printf("test iteration: %u\n", i);
+            printf("data: [%02X, %02X] ", page[0], page[1]);
+            for(uint16_t i = 2; i < 20 - 2; i++)
+            {
+                printf("(%u,%02X) ", i, page[i]);
+            }
+            wearleveling_state_typeDef * const pDebug = debug_wearleveling_getInternalState();
+            printf("r: %u, w:%u, numOfb: %u\n", pDebug->indexBucketRead, pDebug->indexBucketWrite, pDebug->numOfBuckets);
+            ASSERT_EQ(dummy_data_write[0], dummy_data_read[0]);
+            ASSERT_EQ(dummy_data_write[1], dummy_data_read[1]);
+            ASSERT_EQ(dummy_data_write[2], dummy_data_read[2]);
+            ASSERT_EQ(dummy_data_write[3], dummy_data_read[3]);
+            ASSERT_EQ(dummy_data_write[4], dummy_data_read[4]);
+            ASSERT_EQ(dummy_data_write[5], dummy_data_read[5]);
+            ASSERT_EQ(dummy_data_write[6], dummy_data_read[6]);
+        }
+
+
+    } 
 }
 
 
