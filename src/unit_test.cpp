@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
+#include <mutex>
 #include "gtest/gtest.h"
 #include "wearleveling.h"
 
@@ -38,7 +39,10 @@ namespace wearlevelingLibraryTest
             {
                 randomizePageData();
             }
-            virtual void TearDown(){}
+            
+            virtual void TearDown()
+            {
+            }
 
             void fillRandomData(uint8_t * const pData, unsigned dataSize)
             {
@@ -928,6 +932,7 @@ namespace wearlevelingLibraryTest
         mock_pageErase();
         wearleveling.init(&params);
 
+
         const uint16_t NUM_OF_TESTS = 1000;
         for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
         {
@@ -938,13 +943,7 @@ namespace wearlevelingLibraryTest
             }
 
             wearleveling.read(dummy_data_read);
-            ASSERT_EQ(dummy_data_write[0], dummy_data_read[0]);
-            ASSERT_EQ(dummy_data_write[1], dummy_data_read[1]);
-            ASSERT_EQ(dummy_data_write[2], dummy_data_read[2]);
-            ASSERT_EQ(dummy_data_write[3], dummy_data_read[3]);
-            ASSERT_EQ(dummy_data_write[4], dummy_data_read[4]);
-            ASSERT_EQ(dummy_data_write[5], dummy_data_read[5]);
-            ASSERT_EQ(dummy_data_write[6], dummy_data_read[6]);
+            ASSERT_EQ(0, memcmp(dummy_data_read, dummy_data_write, DATA_SIZE));
         }
     }    
 
@@ -983,10 +982,26 @@ namespace wearlevelingLibraryTest
             printf("data: [%02X, %02X] ", page[0], page[1]);
             for(uint16_t i = 2; i < 20 - 2; i++)
             {
-                printf("(%u,%02X) ", i, page[i]);
+                if ((i - 2) % 8 == 0) printf("\n");
+                printf("(%02u,%02X) ", i, page[i]);
             }
             wearleveling_state_typeDef * const pDebug = debug_wearleveling_getInternalState();
             printf("r: %u, w:%u, numOfb: %u\n", pDebug->indexBucketRead, pDebug->indexBucketWrite, pDebug->numOfBuckets);
+
+            printf("R: ");
+            for(uint16_t i = 0; i < DATA_SIZE; i++)
+            {
+                printf("%02X ", dummy_data_read[i]);
+            }
+            printf("\n");
+
+            printf("W: ");
+            for(uint16_t i = 0; i < DATA_SIZE; i++)
+            {
+                printf("%02X ", dummy_data_write[i]);
+            }
+            printf("\n");
+
             ASSERT_EQ(dummy_data_write[0], dummy_data_read[0]);
             ASSERT_EQ(dummy_data_write[1], dummy_data_read[1]);
             ASSERT_EQ(dummy_data_write[2], dummy_data_read[2]);
