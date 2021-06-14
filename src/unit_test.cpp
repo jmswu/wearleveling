@@ -39,7 +39,7 @@ namespace wearlevelingLibraryTest
             {
                 randomizePageData();
             }
-            
+
             virtual void TearDown()
             {
             }
@@ -1010,8 +1010,6 @@ namespace wearlevelingLibraryTest
             ASSERT_EQ(dummy_data_write[5], dummy_data_read[5]);
             ASSERT_EQ(dummy_data_write[6], dummy_data_read[6]);
         }
-
-
     } 
 }
 
