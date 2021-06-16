@@ -5,7 +5,7 @@
 
 #define WEARLEVELING_LIB_VER_MAJOR      (0U)
 #define WEARLEVELING_LIB_VER_MINOR      (0U)
-#define WEARLEVELING_LIB_VER_PATCH      (1U)
+#define WEARLEVELING_LIB_VER_PATCH      (2U)
 
 #define WEARLEVELING_LIB_FORMATED_FLAG  ((uint16_t)0x1234)
 #define WEARLEVELING_LIB_DIRTY_FLAG     ((uint8_t)0x55)
@@ -88,6 +88,11 @@ static uint8_t wearleveling_saveDataToAddress(const uint32_t addr, uint8_t * con
     if (internalState.params.writeTwoByte(addr + offset, tmpTwoBytes) == 0) return 0;
 
     return 1;
+}
+
+uint16_t wearleveling_getEraseWriteCycleMultiplier(void)
+{
+    return internalState.numOfBuckets;
 }
 
 static uint8_t wearleveling_save(uint8_t * const pData)

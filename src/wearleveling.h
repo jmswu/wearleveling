@@ -35,6 +35,8 @@ typedef struct
 
 extern const wearleveling_typeDef wearleveling;
 
+uint16_t wearleveling_getEraseWriteCycleMultiplier(void);
+
 /* for debug only */
 wearleveling_state_typeDef * debug_wearleveling_getInternalState(void);
 
