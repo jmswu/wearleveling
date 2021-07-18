@@ -52,7 +52,7 @@ const wearleveling_typeDef wearleveling =
 
 uint32_t wearleveling_getVersionNumber(void)
 {
-    return ((WEARLEVELING_LIB_VER_MAJOR << 16) | (WEARLEVELING_LIB_VER_MINOR << 8) | (WEARLEVELING_LIB_VER_PATCH));
+    return wearleveling_v2_getVersionNumber();
 }
 
 uint32_t wearleveling_v2_getVersionNumber(void)
