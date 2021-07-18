@@ -33,24 +33,28 @@ typedef struct
 
 typedef wearleveling_state_typeDef* wearleveling_handle_typeDef;
 
-#define WEARLEVELING_USE_V1_CODE
-
-#ifdef WEARLEVELING_USE_V1_CODE
-extern const wearleveling_typeDef wearleveling;
-#endif
-
-uint32_t wearleveling_getVersionNumber(void);
-uint16_t wearleveling_getEraseWriteCycleMultiplier(void);
-
-/* for debug only */
-wearleveling_state_typeDef * debug_wearleveling_getInternalState(void);
-
 /* new interface, starting from v0.1.x */
 wearleveling_handle_typeDef wearleveling_v2_construct(wearleveling_state_typeDef * const pState, wearleveling_params_typeDef * const pParam);
 uint8_t wearleveling_v2_save(wearleveling_handle_typeDef handle, uint8_t * const pData);
 uint8_t wearleveling_v2_read(wearleveling_handle_typeDef handle, uint8_t * const pData);
 uint16_t wearleveling_v2_getEraseWriteCycleMultiplier(wearleveling_handle_typeDef handle);
 uint32_t wearleveling_v2_getVersionNumber(void);
+
+//
+// New interface should be use, this is for backward 
+// compatible only
+//
+#define WEARLEVELING_USE_V1_CODE
+
+#ifdef WEARLEVELING_USE_V1_CODE
+extern const wearleveling_typeDef wearleveling;
+
+uint32_t wearleveling_getVersionNumber(void);
+uint16_t wearleveling_getEraseWriteCycleMultiplier(void);
+
+/* for debug only */
+wearleveling_state_typeDef * debug_wearleveling_getInternalState(void);
+#endif
 
 #ifdef __cplusplus
 }
