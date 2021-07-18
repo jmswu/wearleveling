@@ -477,6 +477,7 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, init_formatPage_2)
     {
+        /* common data */
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 1024,
@@ -486,9 +487,21 @@ namespace wearlevelingLibraryTest
             .pageErase = mock_pageErase,
         };
 
+        /* v1 test */
         mock_pageErase();
         mock_formatPage();
         wearleveling.init(&params);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x01, page[2]);   /* 0x01 is introfuce by mock_formatPage(), it indicats the wearleveling internal format is not called */
+
+        /* v2 test */
+        mock_pageErase();
+        mock_formatPage();
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+        (void)handle;
+
         ASSERT_EQ(0x34, page[0]);
         ASSERT_EQ(0x12, page[1]);
         ASSERT_EQ(0x01, page[2]);   /* 0x01 is introfuce by mock_formatPage(), it indicats the wearleveling internal format is not called */
