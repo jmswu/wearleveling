@@ -755,8 +755,7 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, save_6_mutiple_entry)
     {
-        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
-
+        /* common data */
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 512,
@@ -780,9 +779,10 @@ namespace wearlevelingLibraryTest
                 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 
             };
 
+        /* v1 test */
         mock_pageErase();
         wearleveling.init(&params);
-
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         ASSERT_EQ(0, pDebugData->indexBucketWrite);
         wearleveling.save(dummy_data1);
         ASSERT_EQ(1, pDebugData->indexBucketWrite);
@@ -823,6 +823,58 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0x11, page[66 * 6 + 3]);
 
         wearleveling.save(dummy_data2);
+        ASSERT_EQ(1, pDebugData->indexBucketWrite);
+
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x55, page[2]);
+        ASSERT_EQ(0x55, page[3]);
+
+        /* v2 test */
+        mock_pageErase();
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+
+        ASSERT_EQ(0, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(1, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(2, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(3, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(4, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(5, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(6, handle->indexBucketWrite);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(7, handle->indexBucketWrite);
+
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x00, page[2]);
+        ASSERT_EQ(0x11, page[3]);
+
+        ASSERT_EQ(0x00, page[66 * 1 + 2]);
+        ASSERT_EQ(0x11, page[66 * 1 + 3]);
+
+        ASSERT_EQ(0x00, page[66 * 2 + 2]);
+        ASSERT_EQ(0x11, page[66 * 2 + 3]);
+
+        ASSERT_EQ(0x00, page[66 * 3 + 2]);
+        ASSERT_EQ(0x11, page[66 * 3 + 3]);
+
+        ASSERT_EQ(0x00, page[66 * 4 + 2]);
+        ASSERT_EQ(0x11, page[66 * 4 + 3]);
+
+        ASSERT_EQ(0x00, page[66 * 5 + 2]);
+        ASSERT_EQ(0x11, page[66 * 5 + 3]);
+
+        ASSERT_EQ(0x00, page[66 * 6 + 2]);
+        ASSERT_EQ(0x11, page[66 * 6 + 3]);
+
+        wearleveling_v2_save(handle, dummy_data2);
         ASSERT_EQ(1, pDebugData->indexBucketWrite);
 
         ASSERT_EQ(0x12, page[1]);
