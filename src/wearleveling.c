@@ -264,8 +264,8 @@ static uint16_t wearleveling_findBucketIndexRead(void)
 static uint16_t wearleveling_v2_findBucketIndexRead(wearleveling_state_typeDef * const pState)
 {
     if (pState == NULL) return 0;
-
-    const uint16_t writeIndex = wearleveling_v2_findBucketIndexWrite(pState);
+    
+    const uint16_t writeIndex = pState->indexBucketWrite;
     return writeIndex == 0 ? 0 : writeIndex - 1;
 }
 

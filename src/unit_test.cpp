@@ -885,6 +885,7 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, save_7_read_index)
     {
+        /* common data */
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 512,
@@ -901,9 +902,10 @@ namespace wearlevelingLibraryTest
                 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
             };
 
+        /* v1 test */
         mock_pageErase();
         wearleveling.init(&params);
-        
+
         wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         ASSERT_EQ(0, pDebugData->indexBucketRead);
         wearleveling.save(dummy_data1);
@@ -930,6 +932,38 @@ namespace wearlevelingLibraryTest
         ASSERT_EQ(0, pDebugData->indexBucketRead);
         wearleveling.save(dummy_data1);
         ASSERT_EQ(1, pDebugData->indexBucketRead);
+
+        /* v2 test */
+        mock_pageErase();
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+
+        ASSERT_EQ(0, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(0, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(1, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(2, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(3, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(4, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(5, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(6, handle->indexBucketRead);
+
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x00, page[2]);
+        ASSERT_EQ(0x11, page[3]);
+
+        wearleveling_v2_save(handle, dummy_data1);wearleveling.save(dummy_data1);
+        ASSERT_EQ(0, handle->indexBucketRead);
+        wearleveling_v2_save(handle, dummy_data1);
+        ASSERT_EQ(1, handle->indexBucketRead);
+
     }
 
     TEST_F(wearlevelingLibraryTest, init_calculate_write_index_1)
