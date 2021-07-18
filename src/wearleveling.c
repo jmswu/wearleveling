@@ -161,6 +161,11 @@ uint16_t wearleveling_getEraseWriteCycleMultiplier(void)
     return internalState.numOfBuckets;
 }
 
+uint16_t wearleveling_v2_getEraseWriteCycleMultiplier(wearleveling_handle_typeDef handle)
+{
+    return handle == NULL ? 0 : handle->numOfBuckets;
+}
+
 static uint8_t wearleveling_save(uint8_t * const pData)
 {
     if (pData == NULL) return 0;
