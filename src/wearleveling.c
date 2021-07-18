@@ -18,15 +18,15 @@ static uint8_t wearleveling_read(uint8_t * const pData);
 static uint8_t wearleveling_saveDataToAddress(const uint32_t addr, uint8_t * const pData);
 static uint8_t wearleveling_v2_saveDataToAddress(wearleveling_state_typeDef * const pState, const uint32_t addr, uint8_t * const pData);
 
-static uint16_t wearleveling_calculateBucketSize(void);
+//static uint16_t wearleveling_calculateBucketSize(void);
 static uint16_t wearleveling_v2_calculateBucketSize(wearleveling_params_typeDef * const pParam);
-static uint16_t wearleveling_calculateNumOfBuckets(void);
+//static uint16_t wearleveling_calculateNumOfBuckets(void);
 static uint16_t wearleveling_v2_calculateNumOfBuckets(wearleveling_params_typeDef * const pParam);
 static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
 static uint32_t wearleveling_v2_calculateAddressFromBucketIndex(const uint16_t index, const uint16_t bucketSize);
 static uint16_t wearleveling_findBucketIndexRead(void);
 static uint16_t wearleveling_v2_findBucketIndexRead(wearleveling_state_typeDef * const pState);
-static uint16_t wearleveling_findBucketIndexWrite(void);
+//static uint16_t wearleveling_findBucketIndexWrite(void);
 static uint16_t wearleveling_v2_findBucketIndexWrite(wearleveling_state_typeDef * const pState);
 static uint16_t wearleveling_getTwoByte(uint16_t index, uint8_t * const pData);
 static uint16_t wearleveling_v2_getTwoByte(uint16_t index, uint8_t * const pData);
@@ -36,7 +36,7 @@ static uint8_t wearleveling_getLastbyte(uint8_t * const pData);
 static uint8_t wearleveling_v2_getLastbyte(wearleveling_state_typeDef * const pState, uint8_t * const pData);
 static uint8_t wearleveling_isFull(void);
 static uint8_t wearleveling_v2_isFull(wearleveling_state_typeDef * const pState);
-static uint8_t wearleveling_isFormated(void);
+//static uint8_t wearleveling_isFormated(void);
 static uint8_t wearleveling_v2_isFormated(wearleveling_params_typeDef * const pParam);
 static uint8_t wearleveling_isEvenNumber(uint16_t number);
 static uint8_t wearleveling_v2_isEvenNumber(uint16_t number);
@@ -70,23 +70,7 @@ uint32_t wearleveling_v2_getVersionNumber(void)
 
 static void wearleveling_init(wearleveling_params_typeDef * const pParams)
 {
-    if (pParams == NULL) return;
-
-    memset((void *)&internalState, 0, sizeof(wearleveling_state_typeDef));
-    internalState.params = *pParams;
-    internalState.bucketSize = wearleveling_calculateBucketSize();
-    internalState.numOfBuckets = wearleveling_calculateNumOfBuckets();
-
-    if (wearleveling_isFormated())
-    {
-        internalState.indexBucketWrite = wearleveling_findBucketIndexWrite();
-        internalState.indexBucketRead = wearleveling_findBucketIndexRead();
-    }
-    else
-    {
-        wearleveling_formatPage();
-        wearleveling_resetIndex();
-    }
+    wearleveling_v2_construct(&internalState, pParams);
 }
 
 wearleveling_handle_typeDef 
@@ -251,11 +235,11 @@ uint8_t wearleveling_v2_read(wearleveling_handle_typeDef handle, uint8_t * const
     return 1;
 }
 
-static uint16_t wearleveling_calculateBucketSize(void)
-{
-    uint16_t size_dataPlusDirtyMark_inBytes = internalState.params.dataSizeInByte + sizeof(WEARLEVELING_LIB_DIRTY_FLAG);
-    return size_dataPlusDirtyMark_inBytes % 2 ? size_dataPlusDirtyMark_inBytes + 1 : size_dataPlusDirtyMark_inBytes;
-}
+// static uint16_t wearleveling_calculateBucketSize(void)
+// {
+//     uint16_t size_dataPlusDirtyMark_inBytes = internalState.params.dataSizeInByte + sizeof(WEARLEVELING_LIB_DIRTY_FLAG);
+//     return size_dataPlusDirtyMark_inBytes % 2 ? size_dataPlusDirtyMark_inBytes + 1 : size_dataPlusDirtyMark_inBytes;
+// }
 
 static uint16_t wearleveling_v2_calculateBucketSize(wearleveling_params_typeDef * const pParam)
 {
@@ -264,11 +248,11 @@ static uint16_t wearleveling_v2_calculateBucketSize(wearleveling_params_typeDef 
     return size_dataPlusDirtyMark_inBytes % 2 ? size_dataPlusDirtyMark_inBytes + 1 : size_dataPlusDirtyMark_inBytes;
 }
 
-static uint16_t wearleveling_calculateNumOfBuckets(void)
-{
-    uint16_t capacityMinusFormatedString = internalState.params.pageCapacityInByte - sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
-    return capacityMinusFormatedString / internalState.bucketSize;
-}
+// static uint16_t wearleveling_calculateNumOfBuckets(void)
+// {
+//     uint16_t capacityMinusFormatedString = internalState.params.pageCapacityInByte - sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
+//     return capacityMinusFormatedString / internalState.bucketSize;
+// }
 
 static uint16_t wearleveling_v2_calculateNumOfBuckets(wearleveling_params_typeDef * const pParam)
 {
@@ -322,31 +306,31 @@ static uint16_t wearleveling_v2_findBucketIndexWrite(wearleveling_state_typeDef 
     return 0;
 }
 
-static uint16_t wearleveling_findBucketIndexWrite(void)
-{
-    for(uint16_t i = 0; i < internalState.numOfBuckets; i++)
-    {
-        const uint32_t ADDRESS_OF_NEXT_BUCKET = wearleveling_calculateAddressFromBucketIndex(i + 1);
-        const uint16_t LAST_TWO_BYTES = internalState.params.readTwoByte(ADDRESS_OF_NEXT_BUCKET - 2);
+// static uint16_t wearleveling_findBucketIndexWrite(void)
+// {
+//     for(uint16_t i = 0; i < internalState.numOfBuckets; i++)
+//     {
+//         const uint32_t ADDRESS_OF_NEXT_BUCKET = wearleveling_calculateAddressFromBucketIndex(i + 1);
+//         const uint16_t LAST_TWO_BYTES = internalState.params.readTwoByte(ADDRESS_OF_NEXT_BUCKET - 2);
 
-        uint8_t dirtyFlag = 0;
-        if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte))
-        {
-            dirtyFlag = (uint8_t)(LAST_TWO_BYTES);
-        }
-        else
-        {
-            dirtyFlag = (uint8_t)(LAST_TWO_BYTES >> 8);
-        }
+//         uint8_t dirtyFlag = 0;
+//         if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte))
+//         {
+//             dirtyFlag = (uint8_t)(LAST_TWO_BYTES);
+//         }
+//         else
+//         {
+//             dirtyFlag = (uint8_t)(LAST_TWO_BYTES >> 8);
+//         }
 
-        if ((dirtyFlag != WEARLEVELING_LIB_DIRTY_FLAG) && (dirtyFlag == WEARLEVELING_LIB_EMPTY_FLAG))
-        {
-            return i;
-        }
-    }
+//         if ((dirtyFlag != WEARLEVELING_LIB_DIRTY_FLAG) && (dirtyFlag == WEARLEVELING_LIB_EMPTY_FLAG))
+//         {
+//             return i;
+//         }
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 static uint16_t wearleveling_getTwoByte(uint16_t index, uint8_t * const pData)
 {
@@ -439,11 +423,11 @@ static uint8_t wearleveling_v2_isFull(wearleveling_state_typeDef * const pState)
     return pState->indexBucketWrite >= pState->numOfBuckets ? 1 : 0;
 }
 
-static uint8_t wearleveling_isFormated(void)
-{
-    uint16_t formatedFlag = internalState.params.readTwoByte(0x00);
-    return formatedFlag == WEARLEVELING_LIB_FORMATED_FLAG ? 1 : 0;
-}
+// static uint8_t wearleveling_isFormated(void)
+// {
+//     uint16_t formatedFlag = internalState.params.readTwoByte(0x00);
+//     return formatedFlag == WEARLEVELING_LIB_FORMATED_FLAG ? 1 : 0;
+// }
 
 static uint8_t wearleveling_v2_isFormated(wearleveling_params_typeDef * const pParam)
 {
