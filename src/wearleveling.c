@@ -218,6 +218,32 @@ static uint8_t wearleveling_read(uint8_t * const pData)
     return 1;
 }
 
+uint8_t wearleveling_v2_read(wearleveling_handle_typeDef handle, uint8_t * const pData)
+{
+    if ((pData == NULL) || (handle == NULL)) return 0;
+
+    const uint32_t ADDR_TO_READ = wearleveling_v2_calculateAddressFromBucketIndex(handle->indexBucketRead, handle->bucketSize);
+    const uint16_t NUM_OF_READ = handle->params.dataSizeInByte >> 1;
+    uint16_t tmpTwoByte = 0;
+
+    for(uint16_t i = 0; i < NUM_OF_READ; i++)
+    {
+        tmpTwoByte = handle->params.readTwoByte(ADDR_TO_READ + (i * 2));
+        uint16_t index = i * 2;
+        pData[index] = (uint8_t)(tmpTwoByte);
+        pData[index + 1] = (uint8_t)(tmpTwoByte >> 8);
+    }
+
+    tmpTwoByte = handle->params.readTwoByte(ADDR_TO_READ + (NUM_OF_READ * 2));
+
+    if (wearleveling_v2_isEvenNumber(internalState.params.dataSizeInByte) == 0)
+    {
+        pData[NUM_OF_READ * 2] = (uint8_t)tmpTwoByte;
+    }
+
+    return 1;
+}
+
 static uint16_t wearleveling_calculateBucketSize(void)
 {
     uint16_t size_dataPlusDirtyMark_inBytes = internalState.params.dataSizeInByte + sizeof(WEARLEVELING_LIB_DIRTY_FLAG);
@@ -264,7 +290,7 @@ static uint16_t wearleveling_findBucketIndexRead(void)
 static uint16_t wearleveling_v2_findBucketIndexRead(wearleveling_state_typeDef * const pState)
 {
     if (pState == NULL) return 0;
-    
+
     const uint16_t writeIndex = pState->indexBucketWrite;
     return writeIndex == 0 ? 0 : writeIndex - 1;
 }
