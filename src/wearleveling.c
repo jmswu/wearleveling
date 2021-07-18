@@ -4,8 +4,8 @@
 #include "wearleveling.h"
 
 #define WEARLEVELING_LIB_VER_MAJOR      (0U)
-#define WEARLEVELING_LIB_VER_MINOR      (0U)
-#define WEARLEVELING_LIB_VER_PATCH      (2U)
+#define WEARLEVELING_LIB_VER_MINOR      (1U)
+#define WEARLEVELING_LIB_VER_PATCH      (0U)
 
 #define WEARLEVELING_LIB_FORMATED_FLAG  ((uint16_t)0x1234)
 #define WEARLEVELING_LIB_DIRTY_FLAG     ((uint8_t)0x55)
