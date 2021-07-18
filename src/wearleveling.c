@@ -55,6 +55,11 @@ uint32_t wearleveling_getVersionNumber(void)
     return ((WEARLEVELING_LIB_VER_MAJOR << 16) | (WEARLEVELING_LIB_VER_MINOR << 8) | (WEARLEVELING_LIB_VER_PATCH));
 }
 
+uint32_t wearleveling_v2_getVersionNumber(void)
+{
+    return ((WEARLEVELING_LIB_VER_MAJOR << 16) | (WEARLEVELING_LIB_VER_MINOR << 8) | (WEARLEVELING_LIB_VER_PATCH));
+}
+
 static void wearleveling_init(wearleveling_params_typeDef * const pParams)
 {
     if (pParams == NULL) return;

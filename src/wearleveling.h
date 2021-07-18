@@ -47,6 +47,7 @@ wearleveling_handle_typeDef wearleveling_v2_construct(wearleveling_state_typeDef
 uint8_t wearleveling_v2_save(wearleveling_handle_typeDef handle, uint8_t * const pData);
 uint8_t wearleveling_v2_load(wearleveling_handle_typeDef handle, uint8_t * const pData);
 uint16_t wearleveling_v2_getEraseWriteCycleMultiplier(wearleveling_handle_typeDef handle);
+uint32_t wearleveling_v2_getVersionNumber(void);
 
 #ifdef __cplusplus
 }
