@@ -589,6 +589,7 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, save_3)
     {
+        /* common data */
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 1024,
@@ -600,9 +601,25 @@ namespace wearlevelingLibraryTest
 
         uint8_t dummy_data [] = {0x11, 0x22, 0x33};
 
+        /* v1 test */
         mock_pageErase();
         wearleveling.init(&params);
         wearleveling.save(dummy_data);
+
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0x34, page[0]);
+
+        ASSERT_EQ(0x11, page[2]);
+        ASSERT_EQ(0x22, page[3]); 
+        ASSERT_EQ(0x33, page[4]);
+        ASSERT_EQ(0x55, page[5]); 
+
+        /* v2 test */
+        mock_pageErase();
+        ASSERT_EQ(0xFF, page[2]);
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+        wearleveling_v2_save(handle, dummy_data);
 
         ASSERT_EQ(0x12, page[1]);
         ASSERT_EQ(0x34, page[0]);
