@@ -18,6 +18,7 @@ namespace wearlevelingLibraryTest
     {
         public:
         private:
+            std::mutex myMutex;
             void randomizePageData(void)
             {
                 for(unsigned i = 0; i < PAGE_SIZE_32K; i++)
@@ -30,10 +31,14 @@ namespace wearlevelingLibraryTest
 
             wearlevelingLibraryTest()
             {
+                myMutex.lock();
                 srand(time(NULL));
             }
 
-            virtual ~wearlevelingLibraryTest(){}
+            virtual ~wearlevelingLibraryTest()
+            {
+                myMutex.unlock();
+            }
 
             virtual void SetUp()
             {
