@@ -1453,7 +1453,9 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, init_read_6_random_data)
     {
+        /* common data */
         const uint16_t DATA_SIZE = 7;
+        const uint16_t NUM_OF_TESTS = 1000;
 
         wearleveling_params_typeDef params = 
         {
@@ -1467,13 +1469,12 @@ namespace wearlevelingLibraryTest
         uint8_t dummy_data_write [DATA_SIZE] = { 0 };
         uint8_t dummy_data_read [DATA_SIZE] = { 0 };
 
+        /* v1 test */
         mock_pageErase();
         wearleveling.init(&params);
 
-        const uint16_t NUM_OF_TESTS = 1000;
         for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
         {
-
             fillRandomData(dummy_data_write, DATA_SIZE);
             wearleveling.save(dummy_data_write);
             wearleveling.read(dummy_data_read);
@@ -1484,6 +1485,25 @@ namespace wearlevelingLibraryTest
 
             ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, DATA_SIZE)); 
         }
+
+        /* v2 test */
+        mock_pageErase();
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+
+        for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
+        {
+            fillRandomData(dummy_data_write, DATA_SIZE);
+            wearleveling_v2_save(handle, dummy_data_write);
+            wearleveling_v2_read(handle, dummy_data_read);
+            wearleveling_v2_read(handle, dummy_data_read);
+            wearleveling_v2_read(handle, dummy_data_read);
+            wearleveling_v2_read(handle, dummy_data_read);
+            wearleveling_v2_read(handle, dummy_data_read);
+
+            ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, DATA_SIZE)); 
+        }    
+
     } 
 
     TEST_F(wearlevelingLibraryTest, general_1)
