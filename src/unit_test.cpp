@@ -885,8 +885,6 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, save_7_read_index)
     {
-        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
-
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 512,
@@ -905,7 +903,8 @@ namespace wearlevelingLibraryTest
 
         mock_pageErase();
         wearleveling.init(&params);
-
+        
+        wearleveling_state_typeDef * const pDebugData = debug_wearleveling_getInternalState();
         ASSERT_EQ(0, pDebugData->indexBucketRead);
         wearleveling.save(dummy_data1);
         ASSERT_EQ(0, pDebugData->indexBucketRead);
