@@ -447,6 +447,7 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, init_formatPage_1)
     {
+        /* common data */
         wearleveling_params_typeDef params = 
         {
             .pageCapacityInByte = 1024,
@@ -456,8 +457,19 @@ namespace wearlevelingLibraryTest
             .pageErase = mock_pageErase,
         };
 
+        /* v1 test */
         mock_pageErase();
         wearleveling.init(&params);
+        ASSERT_EQ(0x34, page[0]);
+        ASSERT_EQ(0x12, page[1]);
+        ASSERT_EQ(0xFF, page[2]);
+
+        /* v2 test */
+        mock_pageErase();
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+        (void)handle;
+
         ASSERT_EQ(0x34, page[0]);
         ASSERT_EQ(0x12, page[1]);
         ASSERT_EQ(0xFF, page[2]);
