@@ -33,12 +33,20 @@ typedef struct
     uint8_t (*read) (uint8_t * const pData);
 }wearleveling_typeDef;
 
+typedef wearleveling_state_typeDef* wearleveling_handle_typeDef;
+
 extern const wearleveling_typeDef wearleveling;
 
 uint16_t wearleveling_getEraseWriteCycleMultiplier(void);
 
 /* for debug only */
 wearleveling_state_typeDef * debug_wearleveling_getInternalState(void);
+
+/* new interface, starting from v0.1.x */
+wearleveling_handle_typeDef wearleveling_v2_construct(wearleveling_state_typeDef * const pState, wearleveling_params_typeDef * const pParam);
+uint8_t wearleveling_v2_save(wearleveling_handle_typeDef handle, uint8_t * const pData);
+uint8_t wearleveling_v2_load(wearleveling_handle_typeDef handle, uint8_t * const pData);
+uint16_t wearleveling_v2_getEraseWriteCycleMultiplier(wearleveling_handle_typeDef handle);
 
 #ifdef __cplusplus
 }
