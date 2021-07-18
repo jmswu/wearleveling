@@ -1508,8 +1508,10 @@ namespace wearlevelingLibraryTest
 
     TEST_F(wearlevelingLibraryTest, general_1)
     {
+        /* common data */
         const uint16_t DATA_SIZE = 1024;
 
+        /* v1 test */
         for(uint16_t loop = 0; loop < 200; loop++)
         {
             const uint16_t rand_cap = rand() % 1024 + 10;   /* random capacity, min = 10    */
@@ -1537,6 +1539,39 @@ namespace wearlevelingLibraryTest
                 fillRandomData(dummy_data_write, rand_size);
                 for(uint16_t tmp = 0; tmp < loop_save; tmp++) wearleveling.save(dummy_data_write);
                 for(uint16_t tmp = 0; tmp < loop_read; tmp++) wearleveling.read(dummy_data_read);  
+                ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, rand_size)); 
+            }
+        }
+
+        /* v2 test */
+        for(uint16_t loop = 0; loop < 200; loop++)
+        {
+            const uint16_t rand_cap = rand() % 1024 + 10;   /* random capacity, min = 10    */
+            const uint16_t rand_size = rand() % 64 + 1;     /* random data size, min = 1    */
+            const uint16_t loop_save = rand() % 32 + 1;     /* random save loop, min = 1    */
+            const uint16_t loop_read = rand() % 32 + 1;     /* random read loop, min = 1    */
+            wearleveling_params_typeDef params = 
+            {
+                .pageCapacityInByte = (uint16_t)(rand_cap + rand_size),
+                .dataSizeInByte = rand_size,
+                .readTwoByte = mock_readTwoByte,
+                .writeTwoByte = mock_writeTwoByte,
+                .pageErase = mock_pageErase,
+            };
+
+            uint8_t dummy_data_write [DATA_SIZE] = { 0 };
+            uint8_t dummy_data_read [DATA_SIZE] = { 0 };
+
+            mock_pageErase();
+            wearleveling_state_typeDef wearlevelingState;
+            const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+
+            const uint16_t NUM_OF_TESTS = 1000;
+            for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
+            {
+                fillRandomData(dummy_data_write, rand_size);
+                for(uint16_t tmp = 0; tmp < loop_save; tmp++) wearleveling_v2_save(handle, dummy_data_write);
+                for(uint16_t tmp = 0; tmp < loop_read; tmp++) wearleveling_v2_read(handle, dummy_data_read);  
                 ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, rand_size)); 
             }
         }
