@@ -42,7 +42,7 @@ uint32_t wearleveling_v2_getVersionNumber(void);
 
 //
 // New interface should be use, this is for backward 
-// compatible only
+// compatible only.
 //
 #define WEARLEVELING_USE_V1_CODE
 
