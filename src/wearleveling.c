@@ -11,8 +11,6 @@
 #define WEARLEVELING_LIB_DIRTY_FLAG     ((uint8_t)0x55)
 #define WEARLEVELING_LIB_EMPTY_FLAG     ((uint8_t)0xFF)
 
-static wearleveling_state_typeDef internalState = {0};
-
 static void wearleveling_init(wearleveling_params_typeDef * const pParams);
 static uint8_t wearleveling_save(uint8_t * const pData);
 static uint8_t wearleveling_read(uint8_t * const pData);
@@ -49,12 +47,16 @@ static void wearleveling_v2_formatPage(wearleveling_params_typeDef * const pPara
 static void wearleveling_updateBuckietIndexReadWrite(void);
 static void wearleveling_v2_updateBuckietIndexReadWrite(wearleveling_state_typeDef * const pState);
 
+#ifdef WEARLEVELING_USE_V1_CODE
+static wearleveling_state_typeDef internalState = {0};
+
 const wearleveling_typeDef wearleveling = 
 {
     .init   = wearleveling_init,
     .save   = wearleveling_save,
     .read   = wearleveling_read,
 };
+#endif
 
 uint32_t wearleveling_getVersionNumber(void)
 {

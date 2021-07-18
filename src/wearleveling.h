@@ -6,8 +6,6 @@ extern "C" {
 
 #include <stdint.h>
 
-uint32_t wearleveling_getVersionNumber(void);
-
 typedef struct
 {
     uint16_t pageCapacityInByte;
@@ -35,8 +33,13 @@ typedef struct
 
 typedef wearleveling_state_typeDef* wearleveling_handle_typeDef;
 
-extern const wearleveling_typeDef wearleveling;
+#define WEARLEVELING_USE_V1_CODE
 
+#ifdef WEARLEVELING_USE_V1_CODE
+extern const wearleveling_typeDef wearleveling;
+#endif
+
+uint32_t wearleveling_getVersionNumber(void);
 uint16_t wearleveling_getEraseWriteCycleMultiplier(void);
 
 /* for debug only */
