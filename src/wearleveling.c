@@ -22,7 +22,7 @@ static uint8_t wearleveling_v2_saveDataToAddress(wearleveling_state_typeDef * co
 static uint16_t wearleveling_v2_calculateBucketSize(wearleveling_params_typeDef * const pParam);
 //static uint16_t wearleveling_calculateNumOfBuckets(void);
 static uint16_t wearleveling_v2_calculateNumOfBuckets(wearleveling_params_typeDef * const pParam);
-static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
+//static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index);
 static uint32_t wearleveling_v2_calculateAddressFromBucketIndex(const uint16_t index, const uint16_t bucketSize);
 //static uint16_t wearleveling_findBucketIndexRead(void);
 static uint16_t wearleveling_v2_findBucketIndexRead(wearleveling_state_typeDef * const pState);
@@ -38,7 +38,7 @@ static uint8_t wearleveling_v2_getLastbyte(wearleveling_state_typeDef * const pS
 static uint8_t wearleveling_v2_isFull(wearleveling_state_typeDef * const pState);
 //static uint8_t wearleveling_isFormated(void);
 static uint8_t wearleveling_v2_isFormated(wearleveling_params_typeDef * const pParam);
-static uint8_t wearleveling_isEvenNumber(uint16_t number);
+//static uint8_t wearleveling_isEvenNumber(uint16_t number);
 static uint8_t wearleveling_v2_isEvenNumber(uint16_t number);
 //static void wearleveling_resetIndex(void);
 static void wearleveling_v2_resetIndex(wearleveling_state_typeDef * const pState);
@@ -175,28 +175,7 @@ uint8_t wearleveling_v2_save(wearleveling_handle_typeDef handle, uint8_t * const
 
 static uint8_t wearleveling_read(uint8_t * const pData)
 {
-    if (pData == NULL) return 0;
-
-    const uint32_t ADDR_TO_READ = wearleveling_calculateAddressFromBucketIndex(internalState.indexBucketRead);
-    const uint16_t NUM_OF_READ = internalState.params.dataSizeInByte >> 1;
-    uint16_t tmpTwoByte = 0;
-
-    for(uint16_t i = 0; i < NUM_OF_READ; i++)
-    {
-        tmpTwoByte = internalState.params.readTwoByte(ADDR_TO_READ + (i * 2));
-        uint16_t index = i * 2;
-        pData[index] = (uint8_t)(tmpTwoByte);
-        pData[index + 1] = (uint8_t)(tmpTwoByte >> 8);
-    }
-
-    tmpTwoByte = internalState.params.readTwoByte(ADDR_TO_READ + (NUM_OF_READ * 2));
-
-    if (wearleveling_isEvenNumber(internalState.params.dataSizeInByte) == 0)
-    {
-        pData[NUM_OF_READ * 2] = (uint8_t)tmpTwoByte;
-    }
-
-    return 1;
+    return wearleveling_v2_read(&internalState, pData);
 }
 
 uint8_t wearleveling_v2_read(wearleveling_handle_typeDef handle, uint8_t * const pData)
@@ -250,11 +229,11 @@ static uint16_t wearleveling_v2_calculateNumOfBuckets(wearleveling_params_typeDe
     return capacityMinusFormatedString / wearleveling_v2_calculateBucketSize(pParam);
 }
 
-static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index)
-{
-    const uint32_t FORMATED_FLAG_OFFSET = sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
-    return (FORMATED_FLAG_OFFSET + (index * internalState.bucketSize));
-}
+// static uint32_t wearleveling_calculateAddressFromBucketIndex(uint16_t index)
+// {
+//     const uint32_t FORMATED_FLAG_OFFSET = sizeof(WEARLEVELING_LIB_FORMATED_FLAG);
+//     return (FORMATED_FLAG_OFFSET + (index * internalState.bucketSize));
+// }
 
 static uint32_t wearleveling_v2_calculateAddressFromBucketIndex(const uint16_t index, const uint16_t bucketSize)
 {
@@ -426,10 +405,10 @@ static uint8_t wearleveling_v2_isFormated(wearleveling_params_typeDef * const pP
     return formatedFlag == WEARLEVELING_LIB_FORMATED_FLAG ? 1 : 0;
 }
 
-static uint8_t wearleveling_isEvenNumber(uint16_t number)
-{
-    return ((number % 2) == 0) ? 1 : 0;
-}
+// static uint8_t wearleveling_isEvenNumber(uint16_t number)
+// {
+//     return ((number % 2) == 0) ? 1 : 0;
+// }
 
 static uint8_t wearleveling_v2_isEvenNumber(uint16_t number)
 {
