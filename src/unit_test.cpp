@@ -1509,11 +1509,54 @@ namespace wearlevelingLibraryTest
 
     } 
 
+    TEST_F(wearlevelingLibraryTest, read_1)
+    {
+        const uint16_t LOOP_SAVE = 14;
+        const uint16_t LOOP_READ = 3;
+        const uint16_t DATA_SIZE = 55;
+        const uint16_t DATA_CAP = 446;
+
+        wearleveling_params_typeDef params = 
+        {
+            .pageCapacityInByte = DATA_CAP,
+            .dataSizeInByte = DATA_SIZE,
+            .readTwoByte = mock_readTwoByte,
+            .writeTwoByte = mock_writeTwoByte,
+            .pageErase = mock_pageErase,
+        };
+
+        uint8_t dummy_data_write [1024] = { 0 };
+        uint8_t dummy_data_read [1024] = { 0 };
+
+        mock_pageErase();
+        wearleveling_state_typeDef wearlevelingState;
+        const wearleveling_handle_typeDef handle = wearleveling_v2_construct(&wearlevelingState, &params);
+
+        const uint16_t NUM_OF_TESTS = 1000;
+        for(uint16_t i = 0; i < NUM_OF_TESTS; i++)
+        {
+            fillRandomData(dummy_data_write, DATA_SIZE);
+            for(uint16_t tmp = 0; tmp < LOOP_SAVE; tmp++) wearleveling_v2_save(handle, dummy_data_write);
+            for(uint16_t tmp = 0; tmp < LOOP_READ; tmp++) wearleveling_v2_read(handle, dummy_data_read);  
+
+            // if (memcmp(dummy_data_write, dummy_data_read, DATA_SIZE) != 0)
+            // {
+            //     printf("loop save: %u\n", LOOP_SAVE);
+            //     printf("loop read: %u\n", LOOP_READ);
+            //     printf("data size: %u\n", DATA_SIZE);
+            //     printf("cap  size: %u\n", handle->params.pageCapacityInByte);
+            //     // for(uint16_t i = 0; i < DATA_SIZE + 5; i++) 
+            //     //     printf("[%03u] w: %02X, r: %02X, page: %02X\n",i ,dummy_data_write[i], dummy_data_read[i], page[i + 2]);
+            // }
+
+            ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, DATA_SIZE)); 
+        }
+    }
+
     TEST_F(wearlevelingLibraryTest, general_1)
     {
         /* common data */
         const uint16_t DATA_SIZE = 1024;
-        const std::lock_guard<std::mutex> lock(myMutex);
 
         /* v1 test */
         for(uint16_t loop = 0; loop < 200; loop++)
@@ -1550,8 +1593,8 @@ namespace wearlevelingLibraryTest
         /* v2 test */
         for(uint16_t loop = 0; loop < 200; loop++)
         {
-            const uint16_t rand_cap = rand() % 1024 + 10;   /* random capacity, min = 10    */
             const uint16_t rand_size = rand() % 64 + 1;     /* random data size, min = 1    */
+            const uint16_t rand_cap = rand() % 1024 + 10;   /* random capacity, min = 10    */
             const uint16_t loop_save = rand() % 32 + 1;     /* random save loop, min = 1    */
             const uint16_t loop_read = rand() % 32 + 1;     /* random read loop, min = 1    */
             wearleveling_params_typeDef params = 
@@ -1579,12 +1622,13 @@ namespace wearlevelingLibraryTest
 
                 if (memcmp(dummy_data_write, dummy_data_read, rand_size) != 0)
                 {
+                    printf("loop     : %u, test no  : %u\n", loop, i);
                     printf("loop save: %u\n", loop_save);
                     printf("loop read: %u\n", loop_read);
                     printf("data size: %u\n", rand_size);
-                    printf("cap  size: %u\n", rand_cap);
-                    for(uint16_t i = 0; i < rand_size + 5; i++) 
-                        printf("[%03u] w: %02X, r: %02X, page: %02X\n",i ,dummy_data_write[i], dummy_data_read[i], page[i + 2]);
+                    printf("cap  size: %u\n", handle->params.pageCapacityInByte);
+                    // for(uint16_t i = 0; i < loop_save * rand_size + (loop_save * 3); i++) 
+                    //     printf("[%03u] w: %02X, r: %02X, page: %02X\n",i ,dummy_data_write[i], dummy_data_read[i], page[i + 2]);
                 }
 
                 ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, rand_size)); 
