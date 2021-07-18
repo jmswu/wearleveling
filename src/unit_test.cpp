@@ -8,6 +8,8 @@
 const uint16_t PAGE_SIZE_32K = 1024 * 32;
 static uint8_t page[PAGE_SIZE_32K] = {0};
 
+std::mutex myMutex;
+
 uint8_t mock_pageErase(void);
 uint8_t mock_formatPage(void);
 uint8_t mock_writeTwoByte(uint32_t addr, uint16_t data);
@@ -18,7 +20,6 @@ namespace wearlevelingLibraryTest
     {
         public:
         private:
-            std::mutex myMutex;
             void randomizePageData(void)
             {
                 for(unsigned i = 0; i < PAGE_SIZE_32K; i++)
@@ -31,14 +32,10 @@ namespace wearlevelingLibraryTest
 
             wearlevelingLibraryTest()
             {
-                myMutex.lock();
                 srand(time(NULL));
             }
 
-            virtual ~wearlevelingLibraryTest()
-            {
-                myMutex.unlock();
-            }
+            virtual ~wearlevelingLibraryTest(){}
 
             virtual void SetUp()
             {
@@ -55,6 +52,7 @@ namespace wearlevelingLibraryTest
                 {
                     pData[i] = (uint8_t)(rand());
                 }
+                pData[dataSize] = 0;
             }
     };
 
@@ -1515,6 +1513,7 @@ namespace wearlevelingLibraryTest
     {
         /* common data */
         const uint16_t DATA_SIZE = 1024;
+        const std::lock_guard<std::mutex> lock(myMutex);
 
         /* v1 test */
         for(uint16_t loop = 0; loop < 200; loop++)
@@ -1577,6 +1576,17 @@ namespace wearlevelingLibraryTest
                 fillRandomData(dummy_data_write, rand_size);
                 for(uint16_t tmp = 0; tmp < loop_save; tmp++) wearleveling_v2_save(handle, dummy_data_write);
                 for(uint16_t tmp = 0; tmp < loop_read; tmp++) wearleveling_v2_read(handle, dummy_data_read);  
+
+                if (memcmp(dummy_data_write, dummy_data_read, rand_size) != 0)
+                {
+                    printf("loop save: %u\n", loop_save);
+                    printf("loop read: %u\n", loop_read);
+                    printf("data size: %u\n", rand_size);
+                    printf("cap  size: %u\n", rand_cap);
+                    for(uint16_t i = 0; i < rand_size + 5; i++) 
+                        printf("[%03u] w: %02X, r: %02X, page: %02X\n",i ,dummy_data_write[i], dummy_data_read[i], page[i + 2]);
+                }
+
                 ASSERT_EQ(0, memcmp(dummy_data_write, dummy_data_read, rand_size)); 
             }
         }

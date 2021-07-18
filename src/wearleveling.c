@@ -88,6 +88,7 @@ wearleveling_v2_construct(wearleveling_state_typeDef * const pState, wearlevelin
 
     memset((void *)pState, 0, sizeof(wearleveling_state_typeDef));
     pState->params = *pParam;
+    //pState->params.pageCapacityInByte = pState->params.pageCapacityInByte % 2 ? pState->params.pageCapacityInByte - 1 : pState->params.pageCapacityInByte;
     pState->bucketSize = wearleveling_v2_calculateBucketSize(pParam);
     pState->numOfBuckets = wearleveling_v2_calculateNumOfBuckets(pParam);
 
